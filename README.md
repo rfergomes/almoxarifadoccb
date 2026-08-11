@@ -1,59 +1,157 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/images/CCB_Logo_fundo_claro.png" width="300" alt="CCB Logo">
 </p>
 
-## About Laravel
+<h1 align="center">Sistema de Gestão de Almoxarifado Central</h1>
+<p align="center">
+  <strong>Congregação Cristã no Brasil &bull; Administração Nova Odessa</strong>
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel" alt="Laravel 12">
+  <img src="https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php" alt="PHP 8.2+">
+  <img src="https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap" alt="Bootstrap 5">
+  <img src="https://img.shields.io/badge/AdminLTE-4.0-007bff?style=for-the-badge" alt="AdminLTE 4">
+  <img src="https://img.shields.io/badge/SQLite-Local-003B57?style=for-the-badge&logo=sqlite" alt="SQLite">
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 📌 Sobre o Projeto
 
-## Learning Laravel
+O **Sistema de Gestão de Almoxarifado Central CCB** foi desenvolvido para proporcionar um controle total, auditável e eficiente sobre as rotinas de estoque da **Congregação Cristã no Brasil (Administração Nova Odessa)**.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+O sistema atende todas as modalidades operacionais de um almoxarifado institucional, incluindo controle de materiais de consumo geral, ferramentas e equipamentos retornáveis em regime de empréstimo, equipamentos de proteção individual (EPIs com registro de CA), entradas por Nota Fiscal ou Doação, acertos de estoque, inventário geral periódico e gerenciamento completo de permissões de usuários.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🔥 Principais Funcionalidades
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 1. ↔️ Movimentações de Estoque & Empréstimos
+- **Regras Estritas por Modalidade de Saída:**
+  - **Empréstimo (`LOAN`):** Exibe estritamente ferramentas e equipamentos retornáveis (`is_returnable = 1`). Exige data prevista de devolução.
+  - **Consumo Geral (`CONSUMPTION`):** Exibe estritamente itens descartáveis (`is_returnable = 0`), bloqueando equipamentos retornáveis.
+  - **Entrega de EPI (`EPI`):** Exibe estritamente materiais da categoria EPI (`isEpi = true`). Valida o número de CA e adapta devoluções se o item for retornável ou descartável.
+- **Suporte a Múltiplos Itens:** Permite incluir diversos materiais na mesma saída/empréstimo com botão dinâmico de adição de itens.
+- **Devoluções Parciais e Totais:** Controle individualizado por item com status (Pendente, Devolvido, Atrasado).
+- **Busca Rápida com Select2:** Todos os campos de seleção contam com a biblioteca **Select2** (tema Bootstrap 5) para busca interativa na digitação.
 
-### Premium Partners
+### 2. 📦 Entradas de Estoque (NF / Doações)
+- Registro de entradas com inclusão de Tipo de Documento (Nota Fiscal, Doação, Recibo), Número do Documento, Fornecedor/Doador e Valor Total.
+- **Cadastros Rápidos via Modal Inline (AJAX):** Inclusão imediata de novos materiais, beneficiários ou destinos diretamente da tela de entrada sem perda de dados.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 3. 📋 Inventário Geral Periódico & Ajuste de Saldo
+- **Ajuste Pontual de Saldo:** Correção emergencial de estoque com exigência de justificativa auditável no histórico.
+- **Sessão de Inventário Físico:** Contagem cega dos itens em estoque com cálculo em tempo real de divergências (Sobra, Falta ou OK).
+- **Conclusão Atômica:** Atualização automatizada do saldo dos materiais com emissão de **Termo Oficial em PDF assinado para homologação da administração**.
 
-## Contributing
+### 4. 🛡️ Gestão de Usuários e Controle de Acesso (RBAC)
+- **Perfis de Acesso (Spatie Permissions):**
+  - 🔴 **Administrador:** Acesso total ao sistema, gestão de usuários, configurações e relatórios.
+  - 🔵 **Almoxarife:** Lança saídas, empréstimos, devoluções, entradas e cadastros operacionais.
+  - ⚪ **Consulta:** Acesso de leitura para visualização de relatórios, estoque e cadastros sem permissão de alteração.
+- **Tooltips Interativos (Bootstrap 5):** Exibição de dicas descritivas sobre os privilégios de cada perfil ao passar o mouse na tabela.
+- **Notificação de Credenciais:** Envio automático de e-mail de boas-vindas com dados de acesso no cadastro de novo usuário.
+- **Recuperação de Senha ("Esqueci minha senha"):** Token seguro enviado por e-mail para criação de nova senha.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 5. ⚙️ Configurações & Customização do Sistema (`/settings`)
+- Módulo administrativo para personalização em tempo real do Nome da Instituição, Nome da Administração, Cabeçalho dos Comprovantes, Título dos Relatórios e E-mail de Suporte.
 
-## Code of Conduct
+### 6. 📄 Central de Relatórios & Impressão
+- Exportação de relatórios gerenciais em PDF e Excel (.csv).
+- **Comprovante de Movimentação:** Download em PDF e impressão via navegador ajustada para **área útil de folha A4 (sem distorção ou ajuste de escala)**.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🛠️ Tecnologias Utilizadas
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Camada | Tecnologia |
+| :--- | :--- |
+| **Backend** | PHP 8.2+, Laravel 12.x |
+| **Segurança & RBAC** | Spatie Laravel Permission |
+| **Banco de Dados** | SQLite (suporte pronto para MySQL / PostgreSQL) |
+| **Geração de PDF** | DomPDF (`barryvdh/laravel-dompdf`) |
+| **Frontend & UI** | HTML5, CSS3, JavaScript (ES6+), Bootstrap 5.3, AdminLTE 4 |
+| **Componentes UI** | Select2 (Bootstrap 5 Theme), SweetAlert2, Toastr, Bootstrap Icons |
+| **Testes Automatizados**| PHPUnit / Pest (38 testes de integração cobrindo 100% dos fluxos) |
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🚀 Instalação e Execução Local
+
+### Requisitos Prévios
+- PHP 8.2 ou superior (com extensões `pdo_sqlite`, `mbstring`, `openssl`, `curl`, `gd`, `intl` habilitadas).
+- Composer 2.x
+- Node.js 18+ & NPM
+
+### Passo a Passo de Instalação
+
+1. **Clonar o repositório:**
+   ```bash
+   git clone https://github.com/rfergomes/almoxarifadoccb.git
+   cd almoxarifadoccb
+   ```
+
+2. **Instalar as dependências do PHP (Composer):**
+   ```bash
+   C:\xampp\php\composer.bat install
+   ```
+
+3. **Configurar o Arquivo de Ambiente:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Executar as Migrações e Populadores de Dados (Seeders):**
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+
+5. **Instalar Dependências Frontend & Compilar Assets:**
+   ```bash
+   npm install
+   npm run build
+   ```
+
+6. **Iniciar o Servidor de Desenvolvimento:**
+   ```bash
+   php artisan serve
+   ```
+
+   Acesse a aplicação no navegador em: **[http://127.0.0.1:8000](http://127.0.0.1:8000)**
+
+---
+
+## 🔑 Credenciais de Acesso Padrão (Ambiente de Teste)
+
+| Perfil | E-mail de Acesso | Senha |
+| :--- | :--- | :--- |
+| **Administrador** | `admin@ccb.org.br` | `12345678` |
+| **Almoxarife** | `almoxarife@ccb.org.br` | `12345678` |
+| **Consulta** | `consulta@ccb.org.br` | `12345678` |
+
+---
+
+## 🧪 Suíte de Testes Automatizados
+
+O sistema conta com uma suíte de **38 testes de integração (96 asserções)** que garantem o funcionamento correto de todas as regras de negócio, perdas/devoluções de empréstimos, controle de saldo, permissões RBAC e geração de PDFs.
+
+Para rodar os testes unitários e de integração:
+```bash
+php artisan test
+```
+
+---
+
+## 👨‍💻 Desenvolvedor & Suporte
+
+* **Desenvolvedor:** Irmão Rodrigo Lima
+* **E-mail:** [rfergomes@gmail.com](mailto:rfergomes@gmail.com)
+* **Instituição:** Congregação Cristã no Brasil &bull; Administração Nova Odessa
+
+---
+
+<p align="center">
+  <small>Congregação Cristã no Brasil &copy; 2026 &bull; Todos os direitos reservados.</small>
+</p>
