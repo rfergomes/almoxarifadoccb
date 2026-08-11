@@ -146,9 +146,9 @@ php artisan test
 
 ## 👨‍💻 Desenvolvedor & Suporte
 
-* **Desenvolvedor:** Irmão Rodrigo Lima
+* **Desenvolvedor:** Rodrigo Lima
 * **E-mail:** [rfergomes@gmail.com](mailto:rfergomes@gmail.com)
-* **Instituição:** Congregação Cristã no Brasil &bull; Administração Nova Odessa
+* **Instituição:** Congregação Cristã no Brasil &bull; Administração Campinas
 
 ---
 
