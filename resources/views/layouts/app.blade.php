@@ -2,8 +2,18 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  
+  <!-- PWA & Apple iOS Meta Tags -->
+  <link rel="manifest" href="{{ asset('manifest.json') }}">
+  <meta name="theme-color" content="#003b57">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Almoxarifado CCB">
+  <link rel="apple-touch-icon" href="{{ asset('images/icons/icon-192x192.png') }}">
+
   <title>@yield('title', \App\Models\Setting::get('institution_name', 'Almoxarifado Central CCB'))</title>
 
   <!-- Google Fonts: Source Sans Pro -->
@@ -21,6 +31,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <!-- SweetAlert2 CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <!-- Estilos Customizados & Vite -->
+  @vite(['resources/css/app.css', 'resources/css/responsive-custom.css'])
 
   <style>
     body { font-family: 'Source Sans Pro', sans-serif; background-color: #f4f6f9; }
@@ -41,11 +54,11 @@
     <main class="app-main py-3">
       <div class="app-content-header mb-3">
         <div class="container-fluid">
-          <div class="row align-items-center">
-            <div class="col-sm-6">
+          <div class="row align-items-center g-2">
+            <div class="col-12 col-sm-6">
               <h3 class="mb-0 fw-bold">@yield('page_title', 'Painel Geral')</h3>
             </div>
-            <div class="col-sm-6">
+            <div class="col-12 col-sm-6">
               <ol class="breadcrumb float-sm-end mb-0 bg-transparent p-0">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-decoration-none">Início</a></li>
                 @yield('breadcrumb')
@@ -96,6 +109,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></script>
   <!-- SweetAlert2 JS -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Vite Scripts & Registro PWA -->
+  @vite(['resources/js/app.js', 'resources/js/pwa-register.js'])
 
   @include('partials.alerts')
 

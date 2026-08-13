@@ -94,9 +94,9 @@
             </table>
           </div>
         </div>
-        <div class="card-footer bg-white border-0 py-3 text-end">
-          <a href="{{ route('movements.index') }}" class="btn btn-light me-2">Cancelar</a>
-          <button type="button" class="btn btn-success px-4" id="btnSubmitMovement">
+        <div class="card-footer bg-white border-0 py-3 d-flex flex-column flex-sm-row justify-content-end gap-2">
+          <a href="{{ route('movements.index') }}" class="btn btn-light btn-touch">Cancelar</a>
+          <button type="button" class="btn btn-success btn-touch px-4" id="btnSubmitMovement">
             <i class="bi bi-check-circle me-1"></i> Confirmar e Gravar Movimentação
           </button>
         </div>
