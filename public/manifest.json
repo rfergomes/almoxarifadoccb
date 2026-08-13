@@ -1,7 +1,7 @@
 {
   "name": "Almoxarifado",
   "short_name": "Almoxarifado",
-  "description": "Sistema de Controle de Estoque, Empréstimos e EPIs da Congregação Cristã no Brasil",
+  "description": "Sistema de Controle de Estoque, Empréstimos e EPIs da Congregação Cristã no Brasil, Administração Nova Odessa",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f4f6f9",
