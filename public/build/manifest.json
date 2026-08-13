@@ -1,0 +1,32 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-D13Gw_VQ.css",
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "name": "app",
+    "names": [
+      "app.css"
+    ]
+  },
+  "resources/css/responsive-custom.css": {
+    "file": "assets/responsive-custom-JpHaZjx8.css",
+    "src": "resources/css/responsive-custom.css",
+    "isEntry": true,
+    "name": "responsive-custom",
+    "names": [
+      "responsive-custom.css"
+    ]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-DUr89oQr.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/pwa-register.js": {
+    "file": "assets/pwa-register-BmA0XiqY.js",
+    "name": "pwa-register",
+    "src": "resources/js/pwa-register.js",
+    "isEntry": true
+  }
+}
