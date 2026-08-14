@@ -21,17 +21,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(RolesAndPermissionsSeeder::class);
+        $this->call(CategorySeeder::class);
 
-        // Categorias Padrão de Almoxarifado CCB
-        $catConstrucao = Category::firstOrCreate(['name' => 'Construção Civil'], ['description' => 'Cimentos, areia, tijolos, argamassas e agregados']);
-        $catEletrica = Category::firstOrCreate(['name' => 'Elétrica'], ['description' => 'Fios, cabos, disjuntores, conduítes e iluminação']);
-        $catPintura = Category::firstOrCreate(['name' => 'Pintura & Insumos'], ['description' => 'Tintas, massa corrida, grafiato, seladores e rolos']);
-        $catHidraulica = Category::firstOrCreate(['name' => 'Hidráulica & Encanamento'], ['description' => 'Tubos PVC, conexões, registros e caixas d\'água']);
-        $catEpi = Category::firstOrCreate(['name' => 'EPI (Proteção Individual)'], ['description' => 'Equipamentos de Proteção Individual']);
-        $catFerramentas = Category::firstOrCreate(['name' => 'Ferramentas & Equipamentos'], ['description' => 'Ferramentas e máquinas retornáveis']);
-        $catFerragens = Category::firstOrCreate(['name' => 'Ferragens & Serralheria'], ['description' => 'Parafusos, pregos, dobradiças, fechaduras e eletrodos']);
-        $catMarcenaria = Category::firstOrCreate(['name' => 'Marcenaria & Madeira'], ['description' => 'Tábuas, sarrafos, vigas e compensados']);
-        $catConsumo = Category::firstOrCreate(['name' => 'Consumo Geral & Limpeza'], ['description' => 'Estopas, fitas adesivas, lixas e suprimentos diversos']);
+        $catConstrucao = Category::where('name', 'Construção Civil')->first() ?? Category::first();
+        $catPintura = Category::where('name', 'Pintura & Insumos')->first() ?? Category::first();
+        $catEpi = Category::where('name', 'EPI (Proteção Individual)')->first() ?? Category::first();
+        $catFerramentas = Category::where('name', 'Ferramentas & Equipamentos')->first() ?? Category::first();
 
         // Destinos Padrão (Casas de Oração e Obras)
         $dest1 = Destination::firstOrCreate(
