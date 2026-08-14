@@ -22,19 +22,25 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RolesAndPermissionsSeeder::class);
 
-        // Categorias Padrão
-        $catEpi = Category::firstOrCreate(['name' => 'EPI'], ['description' => 'Equipamentos de Proteção Individual']);
-        $catConsumo = Category::firstOrCreate(['name' => 'Consumo'], ['description' => 'Materiais de consumo geral e obra']);
-        $catFerramentas = Category::firstOrCreate(['name' => 'Ferramenta/Equipamento'], ['description' => 'Ferramentas e equipamentos retornáveis']);
+        // Categorias Padrão de Almoxarifado CCB
+        $catConstrucao = Category::firstOrCreate(['name' => 'Construção Civil'], ['description' => 'Cimentos, areia, tijolos, argamassas e agregados']);
+        $catEletrica = Category::firstOrCreate(['name' => 'Elétrica'], ['description' => 'Fios, cabos, disjuntores, conduítes e iluminação']);
+        $catPintura = Category::firstOrCreate(['name' => 'Pintura & Insumos'], ['description' => 'Tintas, massa corrida, grafiato, seladores e rolos']);
+        $catHidraulica = Category::firstOrCreate(['name' => 'Hidráulica & Encanamento'], ['description' => 'Tubos PVC, conexões, registros e caixas d\'água']);
+        $catEpi = Category::firstOrCreate(['name' => 'EPI (Proteção Individual)'], ['description' => 'Equipamentos de Proteção Individual']);
+        $catFerramentas = Category::firstOrCreate(['name' => 'Ferramentas & Equipamentos'], ['description' => 'Ferramentas e máquinas retornáveis']);
+        $catFerragens = Category::firstOrCreate(['name' => 'Ferragens & Serralheria'], ['description' => 'Parafusos, pregos, dobradiças, fechaduras e eletrodos']);
+        $catMarcenaria = Category::firstOrCreate(['name' => 'Marcenaria & Madeira'], ['description' => 'Tábuas, sarrafos, vigas e compensados']);
+        $catConsumo = Category::firstOrCreate(['name' => 'Consumo Geral & Limpeza'], ['description' => 'Estopas, fitas adesivas, lixas e suprimentos diversos']);
 
         // Destinos Padrão (Casas de Oração e Obras)
         $dest1 = Destination::firstOrCreate(
             ['code' => 'CO-001'],
-            ['name' => 'C.O. Central - Brás', 'type' => 'casa_de_oracao', 'city' => 'São Paulo', 'address' => 'Rua Visconde de Parnaíba, 1616']
+            ['name' => 'Brás Central - Brás', 'type' => 'casa_de_oracao', 'city' => 'São Paulo', 'address' => 'Rua Visconde de Parnaíba, 1616']
         );
         $dest2 = Destination::firstOrCreate(
             ['code' => 'CO-002'],
-            ['name' => 'C.O. Jardim das Flores', 'type' => 'casa_de_oracao', 'city' => 'Osasco', 'address' => 'Av. das Flores, 500']
+            ['name' => 'Jardim das Flores', 'type' => 'casa_de_oracao', 'city' => 'Osasco', 'address' => 'Av. das Flores, 500']
         );
         $dest3 = Destination::firstOrCreate(
             ['code' => 'OB-101'],
@@ -58,11 +64,11 @@ class DatabaseSeeder extends Seeder
         // Materiais Padrão
         $matCimento = Material::firstOrCreate(
             ['code_sku' => 'MAT-CON-001'],
-            ['name' => 'Cimento CP II 50kg', 'category_id' => $catConsumo->id, 'unit_measure' => 'CX', 'current_stock' => 50, 'minimum_stock' => 10, 'is_returnable' => false]
+            ['name' => 'Cimento CP II 50kg', 'category_id' => $catConstrucao->id, 'unit_measure' => 'CX', 'current_stock' => 50, 'minimum_stock' => 10, 'is_returnable' => false]
         );
         $matTinta = Material::firstOrCreate(
             ['code_sku' => 'MAT-CON-002'],
-            ['name' => 'Tinta Acrílica Branca 18L', 'category_id' => $catConsumo->id, 'unit_measure' => 'CX', 'current_stock' => 8, 'minimum_stock' => 10, 'is_returnable' => false]
+            ['name' => 'Tinta Acrílica Branca 18L', 'category_id' => $catPintura->id, 'unit_measure' => 'CX', 'current_stock' => 8, 'minimum_stock' => 10, 'is_returnable' => false]
         );
         $matCapacete = Material::firstOrCreate(
             ['code_sku' => 'EPI-001'],

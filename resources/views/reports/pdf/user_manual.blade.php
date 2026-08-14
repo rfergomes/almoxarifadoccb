@@ -280,7 +280,7 @@
             <ul>
                 <li><strong>Código SKU:</strong> Código único de identificação (ex: <code>MAT-001</code>).</li>
                 <li><strong>Nome do Material:</strong> Nome claro (ex: <code>Tinta Acrílica Branca 18L</code> ou <code>Serra Tico-Tico</code>).</li>
-                <li><strong>Categoria:</strong> Selecione a categoria adequada (Construção, Elétrica, Pintura, EPI, Ferramentas, etc.).</li>
+                <li><strong>Categoria:</strong> Selecione a categoria adequada (Construção Civil, Elétrica, Pintura & Insumos, Hidráulica & Encanamento, EPI, Ferramentas & Equipamentos, Ferragens & Serralheria, Marcenaria & Madeira, Consumo Geral & Limpeza).</li>
                 <li><strong>Unidade de Medida:</strong> Selecione se é por UN (Unidade), KG (Quilograma), GL (Galão), CX (Caixa), M (Metro).</li>
                 <li><strong>É Retornável?:</strong> Marque <em>"Sim (Ferramenta/Eqp)"</em> se for um equipamento que deve ser devolvido após o uso, ou <em>"Não (Consumo)"</em> se for gasto na obra.</li>
             </ul>
