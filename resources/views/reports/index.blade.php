@@ -24,6 +24,14 @@
           <span><i class="bi bi-clock-history text-warning me-2"></i> Devoluções em Atraso</span>
           <i class="bi bi-chevron-right small"></i>
         </a>
+        <a href="{{ route('reports.index', ['type' => 'expiration']) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ $reportType === 'expiration' ? 'active fw-bold' : '' }}">
+          <span><i class="bi bi-calendar-x text-danger me-2"></i> Validade de Insumos</span>
+          <i class="bi bi-chevron-right small"></i>
+        </a>
+        <a href="{{ route('reports.index', ['type' => 'patrimony']) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ $reportType === 'patrimony' ? 'active fw-bold' : '' }}">
+          <span><i class="bi bi-tag text-info me-2"></i> Bens & Patrimônio</span>
+          <i class="bi bi-chevron-right small"></i>
+        </a>
         <a href="{{ route('reports.index', ['type' => 'movements']) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ $reportType === 'movements' ? 'active fw-bold' : '' }}">
           <span><i class="bi bi-arrow-left-right text-info me-2"></i> Histórico de Movimentações</span>
           <i class="bi bi-chevron-right small"></i>
@@ -43,6 +51,10 @@
             <i class="bi bi-exclamation-triangle text-danger me-2"></i>Itens com Estoque Baixo
           @elseif($reportType === 'overdue')
             <i class="bi bi-clock-history text-warning me-2"></i>Empréstimos com Devolução em Atraso
+          @elseif($reportType === 'expiration')
+            <i class="bi bi-calendar-x text-danger me-2"></i>Controle de Validade de Insumos
+          @elseif($reportType === 'patrimony')
+            <i class="bi bi-tag text-info me-2"></i>Relatório de Bens e Equipamentos Patrimoniados
           @else
             <i class="bi bi-arrow-left-right text-info me-2"></i>Histórico Geral de Movimentações
           @endif
@@ -70,6 +82,16 @@
               @foreach($categories as $cat)
                 <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
               @endforeach
+            </select>
+          </div>
+          @elseif($reportType === 'expiration')
+          <div class="col-md-5">
+            <select name="expiration_filter" class="form-select form-select-sm" onchange="this.form.submit()">
+              <option value="all" {{ request('expiration_filter') == 'all' ? 'selected' : '' }}>Todos com Data de Validade</option>
+              <option value="expired" {{ request('expiration_filter') == 'expired' ? 'selected' : '' }}>🔴 Produtos Já Vencidos</option>
+              <option value="expiring_soon" {{ request('expiration_filter') == 'expiring_soon' ? 'selected' : '' }}>🟡 Produtos a Vencer (Próximos 30 Dias)</option>
+              <option value="valid" {{ request('expiration_filter') == 'valid' ? 'selected' : '' }}>🟢 Produtos Válidos (> 30 Dias)</option>
+              <option value="no_expiration" {{ request('expiration_filter') == 'no_expiration' ? 'selected' : '' }}>⚪ Sem Data de Validade</option>
             </select>
           </div>
           @elseif($reportType === 'movements')
@@ -130,6 +152,68 @@
               @empty
               <tr>
                 <td colspan="7" class="text-center py-4 text-muted">Nenhum registro encontrado.</td>
+              </tr>
+              @endforelse
+            </tbody>
+          </table>
+
+          @elseif($reportType === 'expiration')
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>SKU</th>
+                <th>Nome do Insumo</th>
+                <th>Categoria</th>
+                <th>Estoque Atual</th>
+                <th>Data de Validade</th>
+                <th>Status de Validade</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($data as $mat)
+              <tr>
+                <td class="fw-bold text-navy">{{ $mat->code_sku }}</td>
+                <td>{{ $mat->name }}</td>
+                <td>{{ $mat->category?->name ?? 'Geral' }}</td>
+                <td class="fw-bold fs-6">{{ $mat->current_stock }} {{ $mat->unit_measure }}</td>
+                <td>{{ $mat->expiration_date?->format('d/m/Y') ?? 'Indefinida' }}</td>
+                <td>
+                  <span class="{{ $mat->expirationStatus()->badgeClass() }}">
+                    {{ $mat->expirationStatus()->label() }}
+                  </span>
+                </td>
+              </tr>
+              @empty
+              <tr>
+                <td colspan="6" class="text-center py-4 text-muted">Nenhum insumo encontrado para o filtro de validade selecionado.</td>
+              </tr>
+              @endforelse
+            </tbody>
+          </table>
+
+          @elseif($reportType === 'patrimony')
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Código de Patrimônio</th>
+                <th>SKU</th>
+                <th>Nome do Equipamento / Ferramenta</th>
+                <th>Categoria</th>
+                <th>Estoque Armazenado</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($data as $mat)
+              <tr>
+                <td><span class="badge bg-info text-dark fs-6"><i class="bi bi-tag-fill me-1"></i>{{ $mat->patrimony_code }}</span></td>
+                <td class="fw-bold text-navy">{{ $mat->code_sku }}</td>
+                <td class="fw-bold">{{ $mat->name }}</td>
+                <td>{{ $mat->category?->name ?? 'Geral' }}</td>
+                <td><span class="badge bg-secondary fs-6">{{ $mat->current_stock }} {{ $mat->unit_measure }}</span></td>
+              </tr>
+              @empty
+              <tr>
+                <td colspan="5" class="text-center py-4 text-muted">Nenhum equipamento com registro de patrimônio cadastrado.</td>
               </tr>
               @endforelse
             </tbody>

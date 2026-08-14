@@ -123,8 +123,11 @@
                   data-returnable="{{ $mat->is_returnable ? '1' : '0' }}"
                   data-ca="{{ $mat->ca_number }}"
                   data-ca-validity="{{ $mat->ca_validity?->format('d/m/Y') }}"
-                  data-ca-expired="{{ $mat->isCaExpired() ? '1' : '0' }}">
-            {{ $mat->code_sku }} - {{ $mat->name }} ({{ $mat->current_stock }} {{ $mat->unit_measure }}) {{ $mat->is_returnable ? '[Retornável]' : '[Consumo]' }}
+                  data-ca-expired="{{ $mat->isCaExpired() ? '1' : '0' }}"
+                  data-expiration="{{ $mat->expiration_date?->format('d/m/Y') }}"
+                  data-is-expired="{{ $mat->isExpired() ? '1' : '0' }}"
+                  data-is-expiring-soon="{{ $mat->isExpiringSoon(30) ? '1' : '0' }}">
+            {{ $mat->code_sku }} - {{ $mat->name }} ({{ $mat->current_stock }} {{ $mat->unit_measure }}) {{ $mat->is_returnable ? '[Retornável]' : '[Consumo]' }} {{ $mat->isExpired() ? '⚠️ VENCIDO' : '' }}
           </option>
         @endforeach
       </select>
@@ -260,12 +263,25 @@
           stockBadge.className = stock > 0 ? 'badge bg-success fs-6' : 'badge bg-danger fs-6';
           inputQuantity.max = stock;
 
+          let infoText = '';
           if (option.dataset.ca) {
-            let caText = `CA: ${option.dataset.ca}`;
-            if (option.dataset.caValidity) caText += ` | Validade: ${option.dataset.caValidity}`;
-            if (option.dataset.caExpired === '1') caText += ` (VENCIDO!)`;
-            caInfo.textContent = caText;
-            caInfo.className = option.dataset.caExpired === '1' ? 'ca-info text-danger fw-bold d-block mt-1' : 'ca-info text-info d-block mt-1';
+            infoText += `CA: ${option.dataset.ca}`;
+            if (option.dataset.caValidity) infoText += ` | Val: ${option.dataset.caValidity}`;
+            if (option.dataset.caExpired === '1') infoText += ` (CA VENCIDO!)`;
+          }
+
+          if (option.dataset.expiration) {
+            if (infoText) infoText += ' | ';
+            infoText += `Validade Produto: ${option.dataset.expiration}`;
+            if (option.dataset.isExpired === '1') infoText += ` ⚠️ (PRODUTO VENCIDO!)`;
+            else if (option.dataset.isExpiringSoon === '1') infoText += ` 🟡 (A VENCER EM BREVE)`;
+          }
+
+          if (infoText) {
+            caInfo.textContent = infoText;
+            caInfo.className = (option.dataset.caExpired === '1' || option.dataset.isExpired === '1')
+              ? 'ca-info text-danger fw-bold d-block mt-1'
+              : 'ca-info text-info d-block mt-1';
           } else {
             caInfo.textContent = '';
           }
@@ -359,6 +375,29 @@
       const form = document.getElementById('formMovement');
       if (!form.checkValidity()) {
         form.reportValidity();
+        return;
+      }
+
+      let hasExpiredMaterial = false;
+      let expiredMaterialNames = [];
+      document.querySelectorAll('.select-material').forEach(select => {
+        const opt = select.options[select.selectedIndex];
+        if (opt && opt.dataset.isExpired === '1') {
+          hasExpiredMaterial = true;
+          expiredMaterialNames.push(opt.text.split('(')[0].trim());
+        }
+      });
+
+      if (hasExpiredMaterial) {
+        confirmAction({
+          title: 'Atenção: Produto Vencido!',
+          text: `Atenção! Os seguintes itens estão com VALIDADE VENCIDA: ${expiredMaterialNames.join(', ')}. Deseja realmente confirmar a saída?`,
+          icon: 'warning',
+          confirmButtonText: 'Sim, Confirmar Saída!',
+          onConfirm: function() {
+            form.submit();
+          }
+        });
         return;
       }
 

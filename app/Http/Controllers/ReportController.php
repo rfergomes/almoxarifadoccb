@@ -32,6 +32,8 @@ class ReportController extends Controller
                 $request->get('end_date'),
                 $request->get('movement_type')
             ),
+            'expiration' => $this->reportService->getExpirationReport($request->get('expiration_filter', 'all')),
+            'patrimony' => $this->reportService->getPatrimonyReport(),
             default => $this->reportService->getInventoryReport(),
         };
 
@@ -58,6 +60,18 @@ class ReportController extends Controller
             $items = $this->reportService->getOverdueLoansReport();
             $pdf = Pdf::loadView('reports.pdf.overdue_loans', compact('items'));
             return $pdf->download('relatorio-emprestimos-atrasados-ccb.pdf');
+        }
+
+        if ($reportType === 'expiration') {
+            $materials = $this->reportService->getExpirationReport($request->get('expiration_filter', 'all'));
+            $pdf = Pdf::loadView('reports.pdf.expiration', compact('materials'));
+            return $pdf->download('relatorio-validade-produtos-ccb.pdf');
+        }
+
+        if ($reportType === 'patrimony') {
+            $materials = $this->reportService->getPatrimonyReport();
+            $pdf = Pdf::loadView('reports.pdf.patrimony', compact('materials'));
+            return $pdf->download('relatorio-bens-patrimoniados-ccb.pdf');
         }
 
         $movements = $this->reportService->getMovementsReport(
@@ -101,6 +115,33 @@ class ReportController extends Controller
                         $mat->current_stock,
                         $mat->minimum_stock,
                         $mat->ca_number ?? '-'
+                    ]);
+                }
+            } elseif ($reportType === 'expiration') {
+                fputcsv($file, ['SKU', 'Nome Material', 'Categoria', 'Estoque Atual', 'Data de Validade', 'Status de Validade']);
+                $materials = $this->reportService->getExpirationReport($request->get('expiration_filter', 'all'));
+
+                foreach ($materials as $mat) {
+                    fputcsv($file, [
+                        $mat->code_sku,
+                        $mat->name,
+                        $mat->category?->name ?? 'Geral',
+                        $mat->current_stock . ' ' . $mat->unit_measure,
+                        $mat->expiration_date?->format('d/m/Y') ?? 'Indefinida',
+                        $mat->expirationStatus()->label()
+                    ]);
+                }
+            } elseif ($reportType === 'patrimony') {
+                fputcsv($file, ['Código Patrimônio', 'SKU', 'Nome do Equipamento/Ferramenta', 'Categoria', 'Estoque Atual']);
+                $materials = $this->reportService->getPatrimonyReport();
+
+                foreach ($materials as $mat) {
+                    fputcsv($file, [
+                        $mat->patrimony_code,
+                        $mat->code_sku,
+                        $mat->name,
+                        $mat->category?->name ?? 'Geral',
+                        $mat->current_stock . ' ' . $mat->unit_measure
                     ]);
                 }
             } elseif ($reportType === 'overdue') {

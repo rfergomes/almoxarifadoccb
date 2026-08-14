@@ -59,4 +59,28 @@ class ReportService
 
         return $query->latest()->get();
     }
+
+    public function getExpirationReport(string $filterType = 'all', int $daysThreshold = 30): Collection
+    {
+        $query = Material::with('category')->where('status', true);
+
+        match ($filterType) {
+            'expired' => $query->expired(),
+            'expiring_soon' => $query->expiringSoon($daysThreshold),
+            'valid' => $query->whereNotNull('expiration_date')->where('expiration_date', '>', now()->addDays($daysThreshold)),
+            'no_expiration' => $query->whereNull('expiration_date'),
+            default => $query->whereNotNull('expiration_date'),
+        };
+
+        return $query->orderBy('expiration_date', 'asc')->get();
+    }
+
+    public function getPatrimonyReport(): Collection
+    {
+        return Material::with('category')
+            ->withPatrimony()
+            ->orderBy('patrimony_code', 'asc')
+            ->get();
+    }
 }
+

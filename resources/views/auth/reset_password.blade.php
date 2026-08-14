@@ -34,7 +34,7 @@
 <body>
   <div class="card card-reset bg-white p-4">
     <div class="text-center mb-4">
-      <img src="{{ asset('images/CCB_Logo_fundo_claro.png') }}" alt="CCB Logo" style="max-height: 70px; width: auto;" class="img-fluid mb-2">
+      <img src="{{ asset('images/CCB_Logo_preto_fundo_branco.png') }}" alt="CCB Logo" style="max-height: 70px; width: auto;" class="img-fluid mb-2">
       <h4 class="fw-bold mb-1">Cadastrar Nova Senha</h4>
       <p class="text-muted small">Crie uma nova senha de acesso segura para sua conta</p>
     </div>

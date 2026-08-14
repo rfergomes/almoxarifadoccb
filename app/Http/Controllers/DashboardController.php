@@ -51,12 +51,24 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Produtos vencidos e a vencer
+        $expiredMaterialsCount = Material::expired()->count();
+        $expiringSoonMaterialsCount = Material::expiringSoon(30)->count();
+        $patrimonyMaterialsCount = Material::withPatrimony()->count();
+        $expiredMaterials = Material::expired()->with('category')->get();
+        $expiringSoonMaterials = Material::expiringSoon(30)->with('category')->get();
+
         return view('dashboard.index', compact(
             'totalStockItems',
             'lowStockMaterials',
             'overdueItems',
             'expiringEpis',
-            'recentMovements'
+            'recentMovements',
+            'expiredMaterialsCount',
+            'expiringSoonMaterialsCount',
+            'patrimonyMaterialsCount',
+            'expiredMaterials',
+            'expiringSoonMaterials'
         ));
     }
 }

@@ -36,7 +36,7 @@
 <body>
   <div class="card card-login bg-white p-4">
     <div class="text-center mb-4">
-      <img src="{{ asset('images/CCB_Logo_fundo_claro.png') }}" alt="CCB Logo" style="max-height: 75px; width: auto;" class="img-fluid mb-2">
+      <img src="{{ asset('images/CCB_Logo_preto_fundo_branco.png') }}" alt="CCB Logo" style="max-height: 75px; width: auto;" class="img-fluid mb-2">
       <h4 class="fw-bold mb-1">Almoxarifado Central</h4>
       <p class="text-muted small">Congregação Cristã no Brasil - Gestão de Estoque</p>
     </div>

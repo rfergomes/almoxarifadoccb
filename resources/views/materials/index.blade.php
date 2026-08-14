@@ -5,13 +5,54 @@
 
 @section('content')
 <div class="card shadow-sm">
-  <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-    <h5 class="card-title mb-0 fw-bold"><i class="bi bi-boxes text-warning me-2"></i>Materiais Cadastrados</h5>
-    @can('manage-materials')
-    <button class="btn btn-primary btn-sm rounded-pill ms-auto" data-bs-toggle="modal" data-bs-target="#modalCreateMaterial">
-      <i class="bi bi-plus-circle me-1"></i> Novo Material
-    </button>
-    @endcan
+  <div class="card-header bg-white py-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+      <h5 class="card-title mb-0 fw-bold"><i class="bi bi-boxes text-warning me-2"></i>Materiais Cadastrados</h5>
+      @can('manage-materials')
+      <button class="btn btn-primary btn-sm rounded-pill ms-auto" data-bs-toggle="modal" data-bs-target="#modalCreateMaterial">
+        <i class="bi bi-plus-circle me-1"></i> Novo Material
+      </button>
+      @endcan
+    </div>
+
+    <!-- Barra de Filtros e Busca -->
+    <form method="GET" action="{{ route('materials.index') }}" class="row g-2 align-items-center">
+      <div class="col-md-3">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input type="text" name="search" class="form-control" placeholder="Buscar por Nome, SKU ou Patrimônio..." value="{{ request('search') }}">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <select name="category_id" class="form-select form-select-sm">
+          <option value="">Todas as Categorias</option>
+          @foreach($categories as $cat)
+            <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+          @endforeach
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select name="expiration_status" class="form-select form-select-sm">
+          <option value="">Status de Validade (Todos)</option>
+          <option value="expired" {{ request('expiration_status') == 'expired' ? 'selected' : '' }}>🔴 Vencidos</option>
+          <option value="expiring_soon" {{ request('expiration_status') == 'expiring_soon' ? 'selected' : '' }}>🟡 Próximos de Vencer (30d)</option>
+          <option value="valid" {{ request('expiration_status') == 'valid' ? 'selected' : '' }}>🟢 Válidos</option>
+          <option value="no_expiration" {{ request('expiration_status') == 'no_expiration' ? 'selected' : '' }}>⚪ Sem Validade</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select name="has_patrimony" class="form-select form-select-sm">
+          <option value="">Patrimônio (Todos)</option>
+          <option value="1" {{ request('has_patrimony') == '1' ? 'selected' : '' }}>🔵 Com Patrimônio</option>
+        </select>
+      </div>
+      <div class="col-md-1 d-flex gap-1">
+        <button type="submit" class="btn btn-secondary btn-sm w-100"><i class="bi bi-funnel"></i> Filtrar</button>
+        @if(request()->anyFilled(['search', 'category_id', 'expiration_status', 'has_patrimony']))
+          <a href="{{ route('materials.index') }}" class="btn btn-outline-secondary btn-sm" title="Limpar Filtros"><i class="bi bi-x-circle"></i></a>
+        @endif
+      </div>
+    </form>
   </div>
   <div class="card-body p-0">
     <div class="table-responsive">
@@ -20,10 +61,11 @@
           <tr>
             <th>SKU</th>
             <th>Nome do Material</th>
+            <th>Patrimônio</th>
             <th>Categoria</th>
             <th>Estoque Atual</th>
-            <th>Estoque Mínimo</th>
-            <th>CA (EPI) / Validade</th>
+            <th>Validade Produto</th>
+            <th>CA (EPI)</th>
             <th>Retornável?</th>
             <th>Status</th>
             @can('manage-materials')
@@ -37,6 +79,15 @@
             <td class="fw-bold text-navy">{{ $mat->code_sku }}</td>
             <td>{{ $mat->name }}</td>
             <td>
+              @if($mat->hasPatrimony())
+                <span class="badge bg-info text-dark" title="Código de Patrimônio da Entidade">
+                  <i class="bi bi-tag-fill me-1"></i>{{ $mat->patrimony_code }}
+                </span>
+              @else
+                <span class="text-muted small">-</span>
+              @endif
+            </td>
+            <td>
               <span class="badge bg-secondary">{{ $mat->category?->name ?? 'Geral' }}</span>
             </td>
             <td>
@@ -44,10 +95,19 @@
                 {{ $mat->current_stock }} {{ $mat->unit_measure }}
               </span>
               @if($mat->isStockLow())
-                <i class="bi bi-exclamation-triangle-fill text-danger ms-1" title="Estoque abaixo do mínimo!"></i>
+                <i class="bi bi-exclamation-triangle-fill text-danger ms-1" title="Estoque abaixo do mínimo (Mín: {{ $mat->minimum_stock }})"></i>
               @endif
             </td>
-            <td>{{ $mat->minimum_stock }} {{ $mat->unit_measure }}</td>
+            <td>
+              @if($mat->expiration_date)
+                <small class="d-block fw-bold">{{ $mat->expiration_date->format('d/m/Y') }}</small>
+                <span class="{{ $mat->expirationStatus()->badgeClass() }}">
+                  {{ $mat->expirationStatus()->label() }}
+                </span>
+              @else
+                <span class="badge bg-light text-dark">Indefinida</span>
+              @endif
+            </td>
             <td>
               @if($mat->isEpi())
                 <span class="badge bg-dark">{{ $mat->ca_number ?? 'S/N' }}</span>
@@ -89,6 +149,8 @@
                         data-min="{{ $mat->minimum_stock }}"
                         data-ca="{{ $mat->ca_number }}"
                         data-ca-validity="{{ $mat->ca_validity?->format('Y-m-d') }}"
+                        data-expiration="{{ $mat->expiration_date?->format('Y-m-d') }}"
+                        data-patrimony="{{ $mat->patrimony_code }}"
                         data-status="{{ $mat->status ? '1' : '0' }}"
                         title="Editar Cadastro do Material">
                   <i class="bi bi-pencil"></i> Editar
@@ -108,7 +170,7 @@
           </tr>
           @empty
           <tr>
-            <td colspan="9" class="text-center py-4 text-muted">Nenhum material cadastrado.</td>
+            <td colspan="10" class="text-center py-4 text-muted">Nenhum material encontrado com os critérios selecionados.</td>
           </tr>
           @endforelse
         </tbody>
@@ -140,7 +202,7 @@
           </div>
           <div class="col-md-8">
             <label class="form-label">Nome do Material *</label>
-            <input type="text" name="name" class="form-control" placeholder="Ex: Cimento CP II 50kg" required>
+            <input type="text" name="name" class="form-control" placeholder="Ex: Tinta Acrílica Branca 18L" required>
           </div>
           <div class="col-md-6">
             <label class="form-label">Categoria *</label>
@@ -161,6 +223,16 @@
               <option value="0">Não (Consumo)</option>
               <option value="1">Sim (Ferramenta/Eqp)</option>
             </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Data de Validade (Perecíveis)</label>
+            <input type="date" name="expiration_date" class="form-control">
+            <small class="text-muted">Ex: Tintas, massa corrida, grafiato, colas</small>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Código de Patrimônio (Entidade)</label>
+            <input type="text" name="patrimony_code" class="form-control" placeholder="Ex: PAT-CCB-001">
+            <small class="text-muted">Exclusivo para bens/ferramentas da entidade</small>
           </div>
           <div class="col-md-6">
             <label class="form-label">Estoque Inicial *</label>
@@ -188,7 +260,7 @@
   </div>
 </div>
 
-<!-- Modal Editar Material (Sem alteração de estoque atual) -->
+<!-- Modal Editar Material -->
 <div class="modal fade" id="modalEditMaterial" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <form id="formEditMaterial" method="POST" action="" class="modal-content">
@@ -229,6 +301,14 @@
               <option value="0">Não (Consumo)</option>
               <option value="1">Sim (Ferramenta/Eqp)</option>
             </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Data de Validade (Perecíveis)</label>
+            <input type="date" name="expiration_date" id="edit_expiration_date" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Código de Patrimônio (Entidade)</label>
+            <input type="text" name="patrimony_code" id="edit_patrimony_code" class="form-control" placeholder="Ex: PAT-CCB-001">
           </div>
           <div class="col-md-6">
             <label class="form-label">Estoque Mínimo *</label>
@@ -309,6 +389,8 @@
         document.getElementById('edit_status').value = btn.dataset.status;
         document.getElementById('edit_ca_number').value = btn.dataset.ca || '';
         document.getElementById('edit_ca_validity').value = btn.dataset.caValidity || '';
+        document.getElementById('edit_expiration_date').value = btn.dataset.expiration || '';
+        document.getElementById('edit_patrimony_code').value = btn.dataset.patrimony || '';
 
         modalEdit.show();
       });
@@ -330,3 +412,4 @@
   });
 </script>
 @endpush
+

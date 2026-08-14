@@ -74,4 +74,30 @@ class StockService
             return $movement;
         });
     }
+
+    public function getExpiredMaterialsCount(): int
+    {
+        return Material::expired()->count();
+    }
+
+    public function getExpiringSoonMaterialsCount(int $daysThreshold = 30): int
+    {
+        return Material::expiringSoon($daysThreshold)->count();
+    }
+
+    public function getPatrimonyMaterialsCount(): int
+    {
+        return Material::withPatrimony()->count();
+    }
+
+    public function getExpiredMaterials(): \Illuminate\Database\Eloquent\Collection
+    {
+        return Material::expired()->with('category')->get();
+    }
+
+    public function getExpiringSoonMaterials(int $daysThreshold = 30): \Illuminate\Database\Eloquent\Collection
+    {
+        return Material::expiringSoon($daysThreshold)->with('category')->get();
+    }
 }
+

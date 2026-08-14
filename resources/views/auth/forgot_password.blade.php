@@ -34,7 +34,7 @@
 <body>
   <div class="card card-forgot bg-white p-4">
     <div class="text-center mb-4">
-      <img src="{{ asset('images/CCB_Logo_fundo_claro.png') }}" alt="CCB Logo" style="max-height: 70px; width: auto;" class="img-fluid mb-2">
+      <img src="{{ asset('images/CCB_Logo_preto_fundo_branco.png') }}" alt="CCB Logo" style="max-height: 70px; width: auto;" class="img-fluid mb-2">
       <h4 class="fw-bold mb-1">Recuperar Senha</h4>
       <p class="text-muted small">Informe seu e-mail cadastrado para receber as instruções</p>
     </div>

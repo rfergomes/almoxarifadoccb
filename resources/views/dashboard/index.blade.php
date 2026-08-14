@@ -25,13 +25,13 @@
     <div class="card bg-danger text-white shadow-sm h-100">
       <div class="card-body d-flex justify-content-between align-items-center">
         <div>
-          <h3 class="fw-bold mb-0">{{ $lowStockMaterials->count() }}</h3>
-          <span class="fs-7 text-white-50">Alertas Estoque Mínimo</span>
+          <h3 class="fw-bold mb-0">{{ $expiredMaterialsCount }}</h3>
+          <span class="fs-7 text-white-50">Produtos Vencidos</span>
         </div>
-        <i class="bi bi-exclamation-triangle fs-1 text-white-50"></i>
+        <i class="bi bi-calendar-x fs-1 text-white-50"></i>
       </div>
       <div class="card-footer bg-black bg-opacity-10 border-0 text-center py-2">
-        <a href="#sectionLowStock" class="text-white text-decoration-none small">Ver Alertas <i class="bi bi-arrow-right-circle"></i></a>
+        <a href="{{ route('materials.index', ['expiration_status' => 'expired']) }}" class="text-white text-decoration-none small">Ver Vencidos <i class="bi bi-arrow-right-circle"></i></a>
       </div>
     </div>
   </div>
@@ -40,28 +40,28 @@
     <div class="card bg-warning text-dark shadow-sm h-100">
       <div class="card-body d-flex justify-content-between align-items-center">
         <div>
-          <h3 class="fw-bold mb-0">{{ $overdueItems->count() }}</h3>
-          <span class="fs-7 text-dark-50">Empréstimos em Atraso</span>
+          <h3 class="fw-bold mb-0">{{ $expiringSoonMaterialsCount }}</h3>
+          <span class="fs-7 text-dark-50">Produtos a Vencer (30d)</span>
         </div>
-        <i class="bi bi-clock-history fs-1 text-dark-50"></i>
+        <i class="bi bi-calendar-event fs-1 text-dark-50"></i>
       </div>
       <div class="card-footer bg-black bg-opacity-10 border-0 text-center py-2">
-        <a href="#sectionOverdue" class="text-dark text-decoration-none small">Ver Atrasos <i class="bi bi-arrow-right-circle"></i></a>
+        <a href="{{ route('materials.index', ['expiration_status' => 'expiring_soon']) }}" class="text-dark text-decoration-none small">Ver a Vencer <i class="bi bi-arrow-right-circle"></i></a>
       </div>
     </div>
   </div>
 
   <div class="col-lg-3 col-6">
-    <div class="card bg-dark text-white shadow-sm h-100">
+    <div class="card bg-info text-white shadow-sm h-100">
       <div class="card-body d-flex justify-content-between align-items-center">
         <div>
-          <h3 class="fw-bold mb-0">{{ $expiringEpis->count() }}</h3>
-          <span class="fs-7 text-white-50">EPIs com CA a Vencer</span>
+          <h3 class="fw-bold mb-0">{{ $patrimonyMaterialsCount }}</h3>
+          <span class="fs-7 text-white-50">Itens com Patrimônio</span>
         </div>
-        <i class="bi bi-shield-exclamation fs-1 text-white-50"></i>
+        <i class="bi bi-tag fs-1 text-white-50"></i>
       </div>
-      <div class="card-footer bg-white bg-opacity-10 border-0 text-center py-2">
-        <a href="#sectionEpis" class="text-white text-decoration-none small">Ver EPIs <i class="bi bi-arrow-right-circle"></i></a>
+      <div class="card-footer bg-black bg-opacity-10 border-0 text-center py-2">
+        <a href="{{ route('materials.index', ['has_patrimony' => '1']) }}" class="text-white text-decoration-none small">Ver Patrimônios <i class="bi bi-arrow-right-circle"></i></a>
       </div>
     </div>
   </div>

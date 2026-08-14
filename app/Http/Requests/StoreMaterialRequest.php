@@ -26,6 +26,8 @@ class StoreMaterialRequest extends FormRequest
             'minimum_stock' => ['required', 'integer', 'min:0'],
             'ca_number' => ['nullable', 'string', 'max:50'],
             'ca_validity' => ['nullable', 'date'],
+            'expiration_date' => ['nullable', 'date'],
+            'patrimony_code' => ['nullable', 'string', 'max:50', 'unique:materials,patrimony_code,' . $materialId],
             'is_returnable' => ['nullable', 'boolean'],
             'status' => ['nullable', 'boolean'],
         ];
