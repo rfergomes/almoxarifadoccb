@@ -74,10 +74,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/api/quick-destination', [QuickRegistrationController::class, 'destination'])->middleware('can:manage-destinations')->name('api.quick-destination');
     Route::post('/api/quick-material', [QuickRegistrationController::class, 'material'])->middleware('can:manage-materials')->name('api.quick-material');
 
-    // Central de Relatórios Gerenciais
+    // Central de Relatórios Gerenciais & Manual do Usuário
     Route::get('/reports', [ReportController::class, 'index'])->middleware('can:view-dashboard')->name('reports.index');
     Route::get('/reports/export/pdf', [ReportController::class, 'exportPdf'])->middleware('can:view-dashboard')->name('reports.export.pdf');
     Route::get('/reports/export/excel', [ReportController::class, 'exportExcel'])->middleware('can:view-dashboard')->name('reports.export.excel');
+    Route::get('/user-manual/pdf', [ReportController::class, 'userManualPdf'])->middleware('can:view-dashboard')->name('user-manual.pdf');
 
     // Materiais & Estoque
     Route::get('/materials', [MaterialController::class, 'index'])->middleware('can:view-materials')->name('materials.index');

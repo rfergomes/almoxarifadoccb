@@ -60,12 +60,17 @@
           @endif
         </h5>
         
-        <div class="btn-group ms-auto">
-          <a href="{{ route('reports.export.pdf', request()->all()) }}" class="btn btn-danger btn-sm rounded-start-pill" target="_blank">
-            <i class="bi bi-file-earmark-pdf me-1"></i> Exportar PDF
-          </a>
-          <a href="{{ route('reports.export.excel', request()->all()) }}" class="btn btn-success btn-sm rounded-end-pill">
-            <i class="bi bi-file-earmark-excel me-1"></i> Exportar Excel (CSV)
+        <div class="d-flex align-items-center ms-auto gap-2">
+          <div class="btn-group">
+            <a href="{{ route('reports.export.pdf', request()->all()) }}" class="btn btn-danger btn-sm rounded-start-pill" target="_blank">
+              <i class="bi bi-file-earmark-pdf me-1"></i> Exportar PDF
+            </a>
+            <a href="{{ route('reports.export.excel', request()->all()) }}" class="btn btn-success btn-sm rounded-end-pill">
+              <i class="bi bi-file-earmark-excel me-1"></i> Exportar Excel (CSV)
+            </a>
+          </div>
+          <a href="{{ route('user-manual.pdf') }}" class="btn btn-outline-dark btn-sm rounded-pill" target="_blank" title="Baixar Manual do Usuário (PDF)">
+            <i class="bi bi-journal-bookmark me-1"></i> Manual (PDF)
           </a>
         </div>
       </div>

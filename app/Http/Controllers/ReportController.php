@@ -182,4 +182,11 @@ class ReportController extends Controller
             fclose($file);
         }, 200, $headers);
     }
+
+    public function userManualPdf(): Response
+    {
+        $pdf = Pdf::loadView('reports.pdf.user_manual');
+        return $pdf->download('manual-usuario-almoxarifado-ccb.pdf');
+    }
 }
+
