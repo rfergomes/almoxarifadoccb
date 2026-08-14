@@ -19,6 +19,8 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
+use App\Http\Controllers\AttachmentController;
+
 // Autenticação
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
@@ -79,6 +81,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reports/export/pdf', [ReportController::class, 'exportPdf'])->middleware('can:view-dashboard')->name('reports.export.pdf');
     Route::get('/reports/export/excel', [ReportController::class, 'exportExcel'])->middleware('can:view-dashboard')->name('reports.export.excel');
     Route::get('/user-manual/pdf', [ReportController::class, 'userManualPdf'])->middleware('can:view-dashboard')->name('user-manual.pdf');
+
+    // Anexos & Download
+    Route::get('/attachments/{attachment}/download', [AttachmentController::class, 'download'])->middleware('can:view-movements')->name('attachments.download');
+    Route::delete('/attachments/{attachment}', [AttachmentController::class, 'destroy'])->middleware('can:manage-materials')->name('attachments.destroy');
 
     // Materiais & Estoque
     Route::get('/materials', [MaterialController::class, 'index'])->middleware('can:view-materials')->name('materials.index');

@@ -110,6 +110,16 @@
               @endif
             </span>
           </div>
+          @if($movement->type === \App\Enums\MovementType::ENTRY && $movement->entryDocument?->attachment)
+          <div class="col-12 mt-2">
+            <label class="text-muted small d-block mb-1"><i class="bi bi-paperclip text-primary me-1"></i>Comprovante / Anexos Digitais Vinculados</label>
+            <div class="d-flex align-items-center gap-2">
+              <a href="{{ route('attachments.download', $movement->entryDocument->attachment) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">
+                <i class="bi bi-file-earmark-arrow-down me-1"></i> Baixar {{ $movement->entryDocument->attachment->original_name }} ({{ $movement->entryDocument->attachment->formattedSize() }})
+              </a>
+            </div>
+          </div>
+          @endif
           @else
           <div class="col-md-3 col-6">
             <label class="text-muted small d-block">Beneficiário (Quem retira)</label>

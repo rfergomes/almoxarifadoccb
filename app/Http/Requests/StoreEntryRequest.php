@@ -24,6 +24,7 @@ class StoreEntryRequest extends FormRequest
             'total_amount' => ['nullable', 'numeric', 'min:0'],
             'issued_at' => ['nullable', 'date'],
             'notes' => ['nullable', 'string', 'max:1000'],
+            'document_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:10240'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.material_id' => ['required', 'exists:materials,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],

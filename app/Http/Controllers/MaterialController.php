@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMaterialRequest;
 use App\Models\Category;
 use App\Models\Material;
+use App\Services\AttachmentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -14,6 +15,10 @@ use Illuminate\View\View;
 
 class MaterialController extends Controller
 {
+    public function __construct(
+        protected AttachmentService $attachmentService
+    ) {}
+
     public function index(Request $request): View
     {
         $query = Material::with('category');
@@ -84,6 +89,7 @@ class MaterialController extends Controller
         $data = $request->validate([
             'new_stock' => ['required', 'integer', 'min:0'],
             'justification' => ['required', 'string', 'min:5', 'max:500'],
+            'attachment_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:10240'],
         ], [
             'new_stock.required' => 'Informe a contagem atual do estoque.',
             'justification.required' => 'Informe a justificativa do ajuste de inventário.',
@@ -97,9 +103,18 @@ class MaterialController extends Controller
             'current_stock' => $newStock,
         ]);
 
+        if ($request->hasFile('attachment_file')) {
+            $this->attachmentService->uploadAttachment(
+                $request->file('attachment_file'),
+                $material,
+                $request->user()->id,
+                'adjustments'
+            );
+        }
+
         return redirect()->route('materials.index')->with(
             'success',
-            "Estoque do material '{$material->name}' ajustado de {$oldStock} para {$newStock} unidades. Justificativa: {$data['justification']}"
+            "Estoque de {$material->name} ajustado de {$oldStock} para {$newStock} unidades com sucesso!"
         );
     }
 }

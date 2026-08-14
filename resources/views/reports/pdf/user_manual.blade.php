@@ -167,19 +167,6 @@
         table.styled-table tr:nth-child(even) {
             background-color: #F7FAFC;
         }
-        .step-number {
-            display: inline-block;
-            background-color: #003366;
-            color: white;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            text-align: center;
-            font-weight: bold;
-            font-size: 10pt;
-            line-height: 22px;
-            margin-right: 6px;
-        }
     </style>
 </head>
 <body>
@@ -201,34 +188,35 @@
 
         <div style="margin-top: 2cm; margin-bottom: 2cm;">
             <p style="text-align: center; color: #4A5568;">
-                Este manual destina-se a orientar de forma simples e passo a passo a gestão de estoques, cadastro de materiais, controle de validade de insumos, registro de patrimônio, saídas, empréstimos de ferramentas e relatórios gerenciais.
+                Este manual destina-se a orientar de forma simples a gestão de estoques, cadastro de materiais, controle de validade de insumos, registro de patrimônio, saídas, empréstimos de ferramentas, anexos de notas fiscais/avarias e relatórios gerenciais.
             </p>
         </div>
 
         <div class="cover-meta">
             <strong>Congregação Cristã no Brasil — Almoxarifado Central</strong><br>
-            Versão do Sistema: 2026.1 &bull; Documento Atualizado em {{ date('d/m/Y') }}
+            Versão do Sistema: 2026.2 &bull; Documento Atualizado em {{ date('d/m/Y') }}
         </div>
     </div>
 
-    <!-- Índice de Conteúdo -->
+    <!-- 1. Visão Geral -->
     <h1>1. Visão Geral do Sistema</h1>
     <p>
         O <strong>Sistema de Almoxarifado CCB</strong> foi desenvolvido para facilitar o controle diário de materiais de construção, tintas, insumos, ferramentas e Equipamentos de Proteção Individual (EPIs) utilizados em obras e manutenções das Casas de Oração.
     </p>
     
     <div class="alert-box alert-info">
-        <strong>💡 Objetivo Principal:</strong> Garantir que nenhum material seja extraviado, controlar o prazo de validade de insumos perecíveis (como tintas e massas), monitorar empréstimos de ferramentas e oferecer relatórios transparentes para a administração.
+        <strong>💡 Objetivo Principal:</strong> Garantir que nenhum material seja extraviado, controlar o prazo de validade de insumos perecíveis (como tintas e massas), comprovar compras e doações via anexos de Nota Fiscal, registrar fotos de avarias, monitorar empréstimos e oferecer relatórios transparentes para a administração.
     </div>
 
     <h2>1.1 Perfis de Acesso</h2>
     <p>Cada operador possui um nível de permissão no sistema:</p>
     <ul>
-        <li><strong>Administrador:</strong> Acesso total ao sistema, gestão de usuários, configurações e permissões.</li>
-        <li><strong>Almoxarife:</strong> Pode cadastrar materiais, registrar entradas (compras/doações), realizar saídas/empréstimos, devoluções e contagens de inventário.</li>
-        <li><strong>Consulta:</strong> Apenas visualiza os saldos e gera relatórios, sem permissão para alterar estoques.</li>
+        <li><strong>Administrador:</strong> Acesso total ao sistema, gestão de usuários, configurações e substituição/remoção de anexos.</li>
+        <li><strong>Almoxarife:</strong> Pode cadastrar materiais, registrar entradas com notas anexadas, realizar saídas/empréstimos, devoluções e contagens de inventário.</li>
+        <li><strong>Consulta:</strong> Apenas visualiza os saldos, anexos e gera relatórios, sem permissão para alterar estoques.</li>
     </ul>
 
+    <!-- 2. Painel Principal -->
     <h1>2. Entendendo o Painel Principal (Dashboard)</h1>
     <p>Ao fazer login no sistema, você verá o <strong>Painel de Indicadores</strong> com cartões coloridos que mostram o estado atual do almoxarifado:</p>
 
@@ -274,6 +262,7 @@
         </tbody>
     </table>
 
+    <!-- 3. Catálogo de Materiais -->
     <h1>3. Gestão do Catálogo de Materiais</h1>
 
     <h2>3.1 Como Buscar um Material</h2>
@@ -298,32 +287,34 @@
         </li>
         <li><strong>Campos Especiais (MUITO IMPORTANTES):</strong>
             <ul>
-                <li><strong>Data de Validade:</strong> Preencha a data de vencimento para tintas, massa corrida, grafiatos, colas e produtos perecíveis. O sistema avisará automaticamente quando estiver próximo de vencer!</li>
-                <li><strong>Código de Patrimônio:</strong> Digite a plaqueta/código de patrimônio da entidade para equipamentos e ferramentas duráveis (ex: <code>PAT-CCB-2026-001</code>).</li>
+                <li><strong>Data de Validade:</strong> Preencha a data de vencimento para tintas, massa corrida, grafiatos, colas e produtos perecíveis.</li>
+                <li><strong>Código de Patrimônio:</strong> Digite a plaqueta/código de patrimônio da entidade para equipamentos duráveis (ex: <code>PAT-CCB-2026-001</code>).</li>
                 <li><strong>Nº CA e Validade CA:</strong> Preencha apenas no caso de Equipamentos de Proteção Individual (EPIs).</li>
             </ul>
         </li>
         <li>Clique em <strong>Salvar Material</strong>.</li>
     </ol>
 
-    <div class="alert-box alert-warning">
-        <strong>⚠️ Atenção na Edição de Cadastro:</strong> Para manter a segurança, a alteração direta de estoque NÃO é feita na edição cadastral. Se precisar acertar a contagem física do estoque, clique na ação <strong>"Inventário"</strong> ao lado do material.
-    </div>
-
-    <h1>4. Registrando Entradas no Estoque (Compras e Doações)</h1>
+    <!-- 4. Entradas e Anexos -->
+    <h1>4. Registrando Entradas no Estoque (Compras e Doações com Anexos)</h1>
     <p>Toda vez que chegarem materiais no almoxarifado (por compra ou doação):</p>
 
     <ol>
         <li>Acesse o menu <strong>Entradas de Estoque</strong> > <strong>Nova Entrada</strong>.</li>
-        <li>Informe o número da Nota Fiscal ou documento de doação, a data e o fornecedor/doador.</li>
+        <li>Informe o tipo de documento (Nota Fiscal, Termo de Doação, Recibo), número, data de emissão e fornecedor/doador.</li>
+        <li><strong>Anexo de Comprovante (NOVO):</strong> Clique no campo <strong>"Comprovante / Anexo"</strong> e selecione a foto ou o arquivo PDF da Nota Fiscal, DANFE ou Termo de Doação (tamanho máximo de 10MB nos formatos PDF, PNG, JPG, WEBP).</li>
         <li>Adicione os materiais recebidos e informe a quantidade exata entregue.</li>
-        <li>Clique em <strong>Confirmar Entrada</strong>. O saldo do estoque será atualizado automaticamente!</li>
+        <li>Clique em <strong>Confirmar Entrada</strong>. O saldo do estoque será atualizado e a Nota Fiscal ficará salva no sistema!</li>
     </ol>
 
+    <div class="alert-box alert-success">
+        <strong>📄 Consultando e Baixando Notas Fiscais:</strong> Na listagem de entradas ou na tela de detalhes de um comprovante, clique no botão <strong>"Anexo"</strong> (ícone de clipe) para baixar ou visualizar imediatamente o arquivo da Nota Fiscal cadastrada.
+    </div>
+
+    <!-- 5. Saídas e Empréstimos -->
     <h1>5. Registrando Saídas e Empréstimos</h1>
 
     <h2>5.1 Tipos de Saída</h2>
-    <p>O sistema possui 3 modalidades de saída de materiais:</p>
     <ul>
         <li><strong>Consumo Geral:</strong> Para materiais descartáveis ou aplicados definitivamente na obra (cimento, lâmpadas, tintas, parafusos).</li>
         <li><strong>Entrega de EPI:</strong> Para equipamentos de proteção individual (capacetes, luvas, óculos) entregues a voluntários ou trabalhadores.</li>
@@ -341,9 +332,10 @@
     </ol>
 
     <div class="alert-box alert-danger">
-        <strong>🚨 Alerta de Produto Vencido:</strong> Se você tentar dar saída em uma tinta ou massa corrida com data de validade vencida, o sistema exibirá uma mensagem de aviso no topo da tela. Confirme com a administração se o produto pode ser aplicado ou se deve ser descartado!
+        <strong>🚨 Alerta de Produto Vencido:</strong> Se você tentar dar saída em uma tinta ou massa corrida com data de validade vencida, o sistema exibirá um aviso visual solicitando confirmação prévia antes de autorizar a baixa de estoque!
     </div>
 
+    <!-- 6. Devolução -->
     <h1>6. Devolução de Ferramentas Emprestadas</h1>
     <p>Quando o voluntário devolver uma ferramenta emprestada:</p>
     <ol>
@@ -354,16 +346,27 @@
         <li>Ao confirmar, o item retorna ao saldo disponível em estoque e a pendência do beneficiário é encerrada!</li>
     </ol>
 
-    <h1>7. Inventário e Contagem Física de Estoque</h1>
-    <p>Para conferência periódica dos saldos físicos no almoxarifado:</p>
+    <!-- 7. Inventário e Avarias -->
+    <h1>7. Inventário, Contagem Física e Registro de Avarias</h1>
+
+    <h2>7.1 Inventário Periódico Geral</h2>
     <ol>
-        <li>Acesse o menu <strong>Inventário Periódico</strong>.</li>
-        <li>Clique em <strong>Iniciar Nova Sessão de Inventário</strong>.</li>
+        <li>Acesse o menu <strong>Inventário Periódico</strong> > <strong>Iniciar Nova Sessão de Inventário</strong>.</li>
         <li>Digite a contagem física real contada na prateleira para cada item.</li>
         <li>O sistema calculará automaticamente a diferença (sobra ou falta).</li>
-        <li>Após revisão da administração, clique em <strong>Concluir e Ajustar Estoque Atomica</strong> para atualizar todos os saldos oficiais.</li>
+        <li>Clique em <strong>Concluir e Ajustar Estoque</strong> para atualizar todos os saldos oficiais.</li>
     </ol>
 
+    <h2>7.2 Acertos Individuais e Fotos de Avarias (NOVO)</h2>
+    <p>Caso precise fazer um ajuste pontual de saldo por avaria, quebra ou perda de insumo:</p>
+    <ol>
+        <li>Acesse a lista de <strong>Materiais</strong> e clique na ação <strong>"Inventário / Ajustar"</strong> no item desejado.</li>
+        <li>Digite o novo saldo físico contado e escreva a justificativa (ex: <em>"Lata de tinta furada no transporte"</em>).</li>
+        <li>No campo <strong>"Evidência / Foto de Avaria"</strong>, anexe a foto do produto danificado ou o laudo técnico em PDF.</li>
+        <li>Clique em <strong>Confirmar Ajuste</strong>. A imagem da avaria ficará registrada para futuras auditagens!</li>
+    </ol>
+
+    <!-- 8. Relatórios -->
     <h1>8. Emitindo Relatórios em PDF e Excel</h1>
     <p>Na <strong>Central de Relatórios</strong>, você pode gerar documentos oficiais organizados:</p>
     <ul>
@@ -371,7 +374,7 @@
         <li><strong>Validade de Insumos:</strong> Relatório exclusivo mostrando produtos vencidos, a vencer nos próximos 30 dias e produtos válidos.</li>
         <li><strong>Bens & Patrimônio:</strong> Relatório com todas as ferramentas e equipamentos identificados com código de patrimônio.</li>
         <li><strong>Devoluções em Atraso:</strong> Lista de ferramentas emprestadas fora do prazo para cobrança.</li>
-        <li><strong>Histórico de Movimentações:</strong> Registro completo de entradas e saídas com filtro por período.</li>
+        <li><strong>Histórico de Movimentações:</strong> Registro completo de entradas e saídas com filtro por período e links diretos para visualizar os documentos anexados.</li>
     </ul>
 
     <p style="margin-top: 1cm; text-align: center; font-weight: bold; color: #003366;">

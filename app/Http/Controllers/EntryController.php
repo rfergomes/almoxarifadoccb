@@ -23,7 +23,7 @@ class EntryController extends Controller
 
     public function index(): View
     {
-        $entries = Movement::with(['user', 'entryDocument', 'items.material'])
+        $entries = Movement::with(['user', 'entryDocument.attachments', 'items.material'])
             ->where('type', \App\Enums\MovementType::ENTRY)
             ->latest()
             ->paginate(15);

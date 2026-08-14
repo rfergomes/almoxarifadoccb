@@ -98,8 +98,8 @@
     <table>
       <tr>
         <td style="width: 40%;">
-          @if(extension_loaded('gd') && file_exists(public_path('images/CCB_Logo_fundo_claro.png')))
-            <img src="{{ public_path('images/CCB_Logo_fundo_claro.png') }}" class="logo" alt="CCB Logo">
+          @if(extension_loaded('gd') && file_exists(public_path('images/CCB_Logo_preto_fundo_branco.png')))
+            <img src="{{ public_path('images/CCB_Logo_preto_fundo_branco.png') }}" class="logo" alt="CCB Logo">
           @else
             <strong style="font-size: 16px; color: #1a252f;">CCB ALMOXARIFADO</strong>
           @endif

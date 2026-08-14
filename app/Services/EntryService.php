@@ -17,6 +17,10 @@ use Illuminate\Support\Str;
 
 class EntryService
 {
+    public function __construct(
+        protected AttachmentService $attachmentService
+    ) {}
+
     /**
      * Registra um documento de entrada (NF/Doação) e incrementa o saldo de estoque dos materiais.
      */
@@ -32,6 +36,11 @@ class EntryService
                 'issued_at' => $data['issued_at'] ?? null,
                 'notes' => $data['notes'] ?? null,
             ]);
+
+            // 1.1 Se houver anexo de documento enviado, faz o upload
+            if (isset($data['document_file']) && $data['document_file'] instanceof \Illuminate\Http\UploadedFile) {
+                $this->attachmentService->uploadAttachment($data['document_file'], $entryDoc, $userId, 'entries');
+            }
 
             // 2. Gera a movimentação de entrada
             $code = 'ENT-' . date('Ymd') . '-' . strtoupper(Str::random(4));

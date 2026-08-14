@@ -36,7 +36,14 @@
             <td>
               <span class="badge bg-secondary">{{ $ent->entryDocument?->document_type?->label() ?? 'Documento' }}</span>
             </td>
-            <td class="fw-bold">{{ $ent->entryDocument?->document_number }}</td>
+            <td class="fw-bold">
+              {{ $ent->entryDocument?->document_number }}
+              @if($ent->entryDocument?->attachment)
+                <a href="{{ route('attachments.download', $ent->entryDocument->attachment) }}" target="_blank" class="badge bg-primary text-decoration-none ms-1" title="Baixar/Visualizar Comprovante: {{ $ent->entryDocument->attachment->original_name }}">
+                  <i class="bi bi-paperclip me-1"></i>Anexo
+                </a>
+              @endif
+            </td>
             <td>{{ $ent->entryDocument?->supplier_or_donor }}</td>
             <td><span class="badge bg-light text-dark border">{{ $ent->items->count() }} item(ns)</span></td>
             <td class="fw-bold text-success">

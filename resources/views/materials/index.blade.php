@@ -342,7 +342,7 @@
 <!-- Modal Ajuste de Estoque / Inventário -->
 <div class="modal fade" id="modalAdjustStock" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
-    <form id="formAdjustStock" method="POST" action="" class="modal-content">
+    <form id="formAdjustStock" method="POST" action="" class="modal-content" enctype="multipart/form-data">
       @csrf
       <div class="modal-header">
         <h5 class="modal-title fw-bold"><i class="bi bi-sliders text-warning me-2"></i>Ajuste de Estoque / Inventário</h5>
@@ -358,17 +358,24 @@
         </div>
         <div class="mb-3">
           <label class="form-label fw-semibold">Justificativa do Ajuste / Inventário *</label>
-          <textarea name="justification" class="form-control" rows="3" placeholder="Ex: Contagem física de inventário mensal realizada pela administração." required></textarea>
+          <textarea name="justification" class="form-control" rows="3" placeholder="Ex: Baixa por avaria/quebra ocorrida durante transporte ou acerto de contagem anual." required></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold"><i class="bi bi-paperclip text-primary me-1"></i>Evidência / Foto de Avaria (Opcional)</label>
+          <input type="file" name="attachment_file" class="form-control" accept=".pdf,.png,.jpg,.jpeg,.webp">
+          <div class="form-text text-muted" style="font-size: 0.8rem;">Anexe fotos da peça danificada, laudo técnico ou comprovante (máx 10MB).</div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-warning">Confirmar Ajuste de Saldo</button>
+        <button type="submit" class="btn btn-warning">Confirmar Ajuste</button>
       </div>
     </form>
   </div>
 </div>
 @endcan
+
+@include('partials.modal_attachment_preview')
 @endsection
 
 @push('scripts')

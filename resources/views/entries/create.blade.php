@@ -4,7 +4,7 @@
 @section('page_title', 'Lançar Nova Entrada de Estoque (NF / Doação)')
 
 @section('content')
-<form action="{{ route('entries.store') }}" method="POST" id="formEntry">
+<form action="{{ route('entries.store') }}" method="POST" id="formEntry" enctype="multipart/form-data">
   @csrf
   <div class="row g-3">
     <!-- Dados do Documento -->
@@ -28,11 +28,11 @@
               <label class="form-label fw-semibold">Nº do Documento / NF *</label>
               <input type="text" name="document_number" class="form-control" placeholder="Ex: NF-10025 ou DOACAO-2026/01" required>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label class="form-label fw-semibold">Fornecedor ou Doador *</label>
               <input type="text" name="supplier_or_donor" class="form-control" placeholder="Ex: Votorantim Cimentos S.A." required>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <label class="form-label fw-semibold">Data Emissão</label>
               <input type="date" name="issued_at" class="form-control" value="{{ date('Y-m-d') }}">
             </div>
@@ -40,9 +40,14 @@
               <label class="form-label fw-semibold">Valor Total (R$)</label>
               <input type="number" step="0.01" name="total_amount" class="form-control" placeholder="0.00">
             </div>
-            <div class="col-md-9">
+            <div class="col-md-5">
               <label class="form-label fw-semibold">Observações / Detalhes</label>
               <input type="text" name="notes" class="form-control" placeholder="Ex: Material doado por irmão da C.O. Central para a reforma.">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold"><i class="bi bi-paperclip text-primary me-1"></i>Comprovante / Anexo (PDF ou Imagem)</label>
+              <input type="file" name="document_file" class="form-control" accept=".pdf,.png,.jpg,.jpeg,.webp">
+              <div class="form-text text-muted" style="font-size: 0.8rem;">Opção recomendada: PDF, PNG, JPG ou WEBP (máx. 10MB).</div>
             </div>
           </div>
         </div>

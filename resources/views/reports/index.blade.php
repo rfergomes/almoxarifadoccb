@@ -276,6 +276,11 @@
                 <td>
                   @if($mov->type === \App\Enums\MovementType::ENTRY)
                     {{ $mov->entryDocument?->document_number }} ({{ $mov->entryDocument?->document_type?->label() }})
+                    @if($mov->entryDocument?->attachment)
+                      <a href="{{ route('attachments.download', $mov->entryDocument->attachment) }}" target="_blank" class="badge bg-primary text-decoration-none ms-1" title="Baixar Anexo: {{ $mov->entryDocument->attachment->original_name }}">
+                        <i class="bi bi-paperclip me-1"></i>Anexo
+                      </a>
+                    @endif
                   @else
                     {{ $mov->beneficiary?->name }}
                   @endif

@@ -43,7 +43,7 @@ class ReportService
 
     public function getMovementsReport(?string $startDate = null, ?string $endDate = null, ?string $type = null): Collection
     {
-        $query = Movement::with(['user', 'beneficiary', 'destination', 'entryDocument', 'items.material']);
+        $query = Movement::with(['user', 'beneficiary', 'destination', 'entryDocument.attachment', 'items.material']);
 
         if ($startDate) {
             $query->whereDate('created_at', '>=', $startDate);
