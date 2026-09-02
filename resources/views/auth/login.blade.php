@@ -59,7 +59,7 @@
         <label class="form-label small fw-bold">E-mail de Acesso</label>
         <div class="input-group">
           <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
-          <input type="email" name="email" id="inputEmail" class="form-control" placeholder="usuario@ccb.org.br" value="{{ old('email', 'admin@ccb.org.br') }}" required autofocus>
+          <input type="email" name="email" id="inputEmail" class="form-control" placeholder="usuario@ccb.org.br" value="{{ old('email') }}" required autofocus>
         </div>
       </div>
 
@@ -70,7 +70,7 @@
         </div>
         <div class="input-group">
           <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
-          <input type="password" name="password" id="inputPassword" class="form-control" value="12345678" required>
+          <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Digite sua senha" value="" required>
         </div>
       </div>
 
@@ -83,28 +83,10 @@
         <i class="bi bi-box-arrow-in-right me-1"></i> Entrar no Sistema
       </button>
     </form>
-
-    <div class="mt-4 pt-3 border-top text-center">
-      <small class="text-muted d-block mb-2">Atalhos de Acesso Rápido para Teste:</small>
-      <div class="d-flex justify-content-center gap-1">
-        <button type="button" class="btn btn-outline-dark btn-sm rounded-pill btn-quick-login" data-email="admin@ccb.org.br">Admin</button>
-        <button type="button" class="btn btn-outline-primary btn-sm rounded-pill btn-quick-login" data-email="almoxarife@ccb.org.br">Almoxarife</button>
-        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill btn-quick-login" data-email="consulta@ccb.org.br">Consulta</button>
-      </div>
-    </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
   @include('partials.alerts')
-
-  <script>
-    document.querySelectorAll('.btn-quick-login').forEach(btn => {
-      btn.addEventListener('click', function() {
-        document.getElementById('inputEmail').value = btn.dataset.email;
-        document.getElementById('inputPassword').value = '12345678';
-      });
-    });
-  </script>
 </body>
 </html>

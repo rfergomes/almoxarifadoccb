@@ -49,16 +49,19 @@
       <div class="card shadow-sm">
         <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
           <h5 class="card-title mb-0 fw-bold"><i class="bi bi-list-check text-success me-2"></i>Folha de Contagem Física</h5>
-          <div class="ms-auto btn-group">
+          <div class="ms-auto btn-group no-print">
             <a href="{{ route('inventories.pdf', $inventory) }}" class="btn btn-outline-danger btn-sm rounded-start-pill" target="_blank">
-              <i class="bi bi-file-earmark-pdf me-1"></i> Imprimir Termo PDF
+              <i class="bi bi-file-earmark-pdf me-1"></i> Termo PDF
             </a>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.print()" title="Imprimir Folha de Contagem">
+              <i class="bi bi-printer me-1"></i> Imprimir
+            </button>
             @if($inventory->isOpen())
             <button type="submit" class="btn btn-outline-primary btn-sm">
-              <i class="bi bi-save me-1"></i> Salvar Contagens (Rascunho)
+              <i class="bi bi-save me-1"></i> Salvar Contagens
             </button>
             <button type="button" class="btn btn-success btn-sm rounded-end-pill" id="btnCompleteInventory">
-              <i class="bi bi-check-circle me-1"></i> Concluir Inventário & Atualizar Saldos
+              <i class="bi bi-check-circle me-1"></i> Concluir & Atualizar
             </button>
             @endif
           </div>

@@ -75,3 +75,118 @@
     border-radius: 0.75rem;
   }
 }
+
+/* 5. Regras Globais de Reset para Impressão Direta (@media print) */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  *, *::before, *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html,
+  body,
+  .app-wrapper,
+  .app-main,
+  .app-content,
+  .container-fluid,
+  body.layout-fixed,
+  .layout-fixed .app-wrapper,
+  .layout-fixed .app-main {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    position: static !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Ocultar elementos de layout e navegação que não devem ser impressos */
+  .app-sidebar,
+  .app-header,
+  .app-footer,
+  .app-content-header,
+  .sidebar,
+  .navbar,
+  .nav,
+  .breadcrumb,
+  .btn,
+  .alert,
+  .modal,
+  .dropdown-menu,
+  .no-print,
+  .d-print-none,
+  aside,
+  nav,
+  footer {
+    display: none !important;
+  }
+
+  /* Garantir exibição de elementos exclusivos de impressão */
+  .d-print-block {
+    display: block !important;
+  }
+
+  .d-print-flex {
+    display: flex !important;
+  }
+
+  .d-print-table-row {
+    display: table-row !important;
+  }
+
+  /* Comprovantes e Cards */
+  .card,
+  .printable-receipt {
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: transparent !important;
+  }
+
+  .card-body {
+    padding: 0 !important;
+  }
+
+  /* Tabelas */
+  .table-responsive {
+    overflow: visible !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 0 0 1rem 0 !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 11px !important;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr, td, th {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  th, td {
+    padding: 4px 6px !important;
+  }
+}
+

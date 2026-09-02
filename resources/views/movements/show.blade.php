@@ -8,45 +8,57 @@
   @media print {
     @page {
       size: A4 portrait;
-      margin: 5mm 8mm;
+      margin: 8mm 10mm;
     }
-    body {
+    html, body, .app-wrapper, .app-main, .app-content, .container-fluid, .row, .col-lg-10 {
       background-color: #fff !important;
       font-size: 12px !important;
       color: #000 !important;
       margin: 0 !important;
       padding: 0 !important;
-    }
-    .app-sidebar, .app-header, .app-footer, .app-content-header, .btn, .alert, .modal, .no-print {
-      display: none !important;
-    }
-    .app-main, .app-content, .container-fluid {
-      padding: 0 !important;
-      margin: 0 !important;
       width: 100% !important;
       max-width: 100% !important;
+      overflow: visible !important;
+      height: auto !important;
+      position: static !important;
+      display: block !important;
+      float: none !important;
     }
-    .card {
+    .app-sidebar, .app-header, .app-footer, .app-content-header, .btn, .alert, .modal, .no-print, .btn-group {
+      display: none !important;
+    }
+    .card, .printable-receipt {
       border: none !important;
       box-shadow: none !important;
       padding: 0 !important;
       margin: 0 !important;
-    }
-    .printable-receipt {
       width: 100% !important;
-      margin: 0 !important;
-      padding: 0 !important;
+      max-width: 100% !important;
+      background: transparent !important;
     }
     .card-body {
-      padding: 10px !important;
+      padding: 0 !important;
+    }
+    .table-responsive {
+      overflow: visible !important;
+      display: block !important;
+      width: 100% !important;
     }
     .table {
       font-size: 11px !important;
       width: 100% !important;
       margin-bottom: 15px !important;
+      border-collapse: collapse !important;
     }
     .table th, .table td {
       padding: 5px 8px !important;
+      color: #000 !important;
+      border: 1px solid #dee2e6 !important;
+    }
+    .d-print-block {
+      display: block !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
     }
   }
 </style>

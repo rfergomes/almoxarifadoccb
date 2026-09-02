@@ -6,7 +6,7 @@
 @section('content')
 <div class="row g-3">
   <!-- Menu de Navegação dos Relatórios -->
-  <div class="col-lg-3">
+  <div class="col-lg-3 no-print">
     <div class="card shadow-sm">
       <div class="card-header bg-white py-3">
         <h5 class="card-title mb-0 fw-bold"><i class="bi bi-journal-text text-primary me-2"></i>Tipos de Relatório</h5>
@@ -60,13 +60,16 @@
           @endif
         </h5>
         
-        <div class="d-flex align-items-center ms-auto gap-2">
+        <div class="d-flex align-items-center ms-auto gap-2 no-print">
           <div class="btn-group">
             <a href="{{ route('reports.export.pdf', request()->all()) }}" class="btn btn-danger btn-sm rounded-start-pill" target="_blank">
               <i class="bi bi-file-earmark-pdf me-1"></i> Exportar PDF
             </a>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.print()" title="Imprimir Relatório">
+              <i class="bi bi-printer me-1"></i> Imprimir
+            </button>
             <a href="{{ route('reports.export.excel', request()->all()) }}" class="btn btn-success btn-sm rounded-end-pill">
-              <i class="bi bi-file-earmark-excel me-1"></i> Exportar Excel (CSV)
+              <i class="bi bi-file-earmark-excel me-1"></i> Exportar Excel
             </a>
           </div>
           <a href="{{ route('user-manual.pdf') }}" class="btn btn-outline-dark btn-sm rounded-pill" target="_blank" title="Baixar Manual do Usuário (PDF)">
@@ -76,7 +79,7 @@
       </div>
 
       <!-- Filtros -->
-      <div class="card-body bg-light border-bottom py-3">
+      <div class="card-body bg-light border-bottom py-3 no-print">
         <form action="{{ route('reports.index') }}" method="GET" class="row g-2 align-items-center">
           <input type="hidden" name="type" value="{{ $reportType }}">
 

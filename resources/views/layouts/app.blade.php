@@ -43,6 +43,10 @@
     .developer-link { color: #0d6efd; text-decoration: none; font-weight: 600; transition: all 0.2s ease-in-out; }
     .developer-link:hover { color: #0a58ca; text-decoration: underline; }
     .select2-container--bootstrap-5 .select2-selection { border-radius: 0.375rem; }
+    @media print {
+      body, .app-wrapper, .app-main, .app-content { overflow: visible !important; height: auto !important; position: static !important; background: #fff !important; }
+      .app-sidebar, .app-header, .app-footer, .app-content-header, .btn, .alert, .modal, .no-print { display: none !important; }
+    }
   </style>
   @stack('styles')
 </head>
