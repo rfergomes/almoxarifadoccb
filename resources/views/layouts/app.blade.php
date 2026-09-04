@@ -64,6 +64,8 @@
         grid-gap: 0 !important;
         flex: none !important;
         transform: none !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
       .app-sidebar, .app-header, .app-footer, .app-content-header, .sidebar, .navbar, .btn, .alert, .modal, .no-print { display: none !important; }
     }

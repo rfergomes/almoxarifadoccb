@@ -151,16 +151,75 @@
     .table td {
       padding: 4px 6px !important;
       color: #000000 !important;
-      border: 1px solid #c0c0c0 !important;
+      -webkit-text-fill-color: #000000 !important;
+      border: 1px solid #000000 !important;
     }
 
     .table thead {
       display: table-header-group !important;
     }
 
+    .table thead th {
+      border-bottom: 2px solid #000000 !important;
+      font-weight: 700 !important;
+      color: #000000 !important;
+    }
+
     .table tr {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
+    }
+
+    /* Estilos Defensivos Monocromáticos (Visíveis com ou sem Gráficos de Segundo Plano) */
+    .printable-receipt,
+    .printable-receipt * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .printable-receipt h4,
+    .printable-receipt h5,
+    .printable-receipt h6,
+    .printable-receipt p,
+    .printable-receipt span,
+    .printable-receipt td,
+    .printable-receipt th,
+    .printable-receipt strong {
+      color: #000000 !important;
+      -webkit-text-fill-color: #000000 !important;
+    }
+
+    .printable-receipt .text-muted,
+    .printable-receipt label {
+      color: #222222 !important;
+      -webkit-text-fill-color: #222222 !important;
+      font-weight: 600 !important;
+    }
+
+    /* Badges com contorno preto e texto preto (evita texto branco invisível) */
+    .printable-receipt .badge {
+      color: #000000 !important;
+      -webkit-text-fill-color: #000000 !important;
+      background-color: transparent !important;
+      background: transparent !important;
+      border: 1px solid #000000 !important;
+      font-weight: 700 !important;
+      padding: 2px 6px !important;
+    }
+
+    /* Bordas físicas para divisores e observações */
+    .printable-receipt .border-bottom {
+      border-bottom: 2px solid #000000 !important;
+    }
+
+    .printable-receipt .border-top {
+      border-top: 1px solid #000000 !important;
+    }
+
+    .printable-receipt .bg-light {
+      background-color: transparent !important;
+      background: transparent !important;
+      border: 1px solid #000000 !important;
     }
 
     /* Assinaturas lado a lado */
