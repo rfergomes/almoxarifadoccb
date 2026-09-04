@@ -96,7 +96,7 @@
                 @endif
               </div>
               @if(Auth::id() !== $usr->id)
-              <form id="form-delete-user-{{ $usr->id }}" action="{{ route('users.destroy', $usr) }}" method="POST" class="d-none">
+              <form id="form-delete-user-{{ $usr->id }}" action="{{ url('/users/' . $usr->id) }}" method="POST" class="d-none">
                 @csrf
                 @method('DELETE')
               </form>

@@ -156,7 +156,7 @@
                   <i class="bi bi-pencil"></i> Editar
                 </button>
                 <button type="button" 
-                        class="btn btn-outline-warning btn-sm {{ auth()->user()?->hasRole('Administrador') ? '' : 'rounded-end-pill' }} btn-adjust-material"
+                        class="btn btn-outline-warning btn-sm {{ auth()->user()?->can('manage-users') ? '' : 'rounded-end-pill' }} btn-adjust-material"
                         data-id="{{ $mat->id }}"
                         data-name="{{ $mat->name }}"
                         data-current="{{ $mat->current_stock }}"
@@ -164,7 +164,7 @@
                         title="Ajustar Saldo de Inventário">
                   <i class="bi bi-sliders"></i> Inventário
                 </button>
-                @if(auth()->user()?->hasRole('Administrador'))
+                @can('manage-users')
                 <button type="button" 
                         class="btn btn-outline-danger btn-sm rounded-end-pill btn-delete-material"
                         data-id="{{ $mat->id }}"
@@ -172,14 +172,14 @@
                         title="Excluir Material">
                   <i class="bi bi-trash"></i> Excluir
                 </button>
-                @endif
+                @endcan
               </div>
-              @if(auth()->user()?->hasRole('Administrador'))
-              <form id="form-delete-material-{{ $mat->id }}" action="{{ route('materials.destroy', $mat) }}" method="POST" class="d-none">
+              @can('manage-users')
+              <form id="form-delete-material-{{ $mat->id }}" action="{{ url('/materials/' . $mat->id) }}" method="POST" class="d-none">
                 @csrf
                 @method('DELETE')
               </form>
-              @endif
+              @endcan
             </td>
             @endcan
           </tr>

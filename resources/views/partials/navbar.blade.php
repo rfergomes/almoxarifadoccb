@@ -18,7 +18,7 @@
         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi bi-person-circle fs-5 me-1 text-primary"></i>
           <span class="fw-semibold">{{ Auth::user()->name }}</span>
-          <span class="badge bg-{{ Auth::user()->primary_role_badge }} ms-2">{{ Auth::user()->primary_role }}</span>
+          <span class="badge bg-{{ Auth::user()->primary_role_badge ?? 'primary' }} ms-2">{{ Auth::user()->primary_role ?? 'Usuário' }}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end shadow border-0">
           <li>

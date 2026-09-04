@@ -46,6 +46,20 @@ class User extends Authenticatable
      */
     public function getPrimaryRoleAttribute(): string
     {
+        if ($this->relationLoaded('roles')) {
+            $roleNames = $this->roles->pluck('name')->all();
+            if (in_array('Administrador', $roleNames, true)) {
+                return 'Administrador';
+            }
+            if (in_array('Almoxarife', $roleNames, true)) {
+                return 'Almoxarife';
+            }
+            if (in_array('Consulta', $roleNames, true)) {
+                return 'Consulta';
+            }
+            return $roleNames[0] ?? 'Consulta';
+        }
+
         if ($this->hasRole('Administrador')) {
             return 'Administrador';
         }

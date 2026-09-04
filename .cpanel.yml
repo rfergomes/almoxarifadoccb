@@ -3,7 +3,8 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home2/sibemo33/public_html/almoxarifado.sibem.top/
     - /bin/cp -R * $DEPLOYPATH
-    - /usr/local/bin/php $DEPLOYPATH/artisan migrate --force
-    - /usr/local/bin/php $DEPLOYPATH/artisan config:cache
-    - /usr/local/bin/php $DEPLOYPATH/artisan route:cache
-    - /usr/local/bin/php $DEPLOYPATH/artisan view:cache
+    - /bin/rm -f $DEPLOYPATH/bootstrap/cache/*.php
+    - /bin/rm -f $DEPLOYPATH/storage/framework/views/*.php
+    - /usr/local/bin/php $DEPLOYPATH/artisan migrate --force || true
+    - /usr/local/bin/php $DEPLOYPATH/artisan optimize:clear || true
+

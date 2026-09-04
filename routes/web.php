@@ -15,9 +15,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route('dashboard');
-});
+Route::redirect('/', '/dashboard');
 
 use App\Http\Controllers\AttachmentController;
 

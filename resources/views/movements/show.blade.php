@@ -416,11 +416,11 @@
             <i class="bi bi-arrow-left me-1"></i> Voltar
           </a>
           <div class="btn-group">
-            @if(auth()->user()?->hasRole('Administrador'))
+            @can('manage-users')
             <button type="button" class="btn btn-outline-danger btn-delete-movement" data-code="{{ $movement->code }}">
               <i class="bi bi-trash me-1"></i> Excluir Movimentação
             </button>
-            @endif
+            @endcan
             <a href="{{ route('movements.pdf', $movement) }}" class="btn btn-outline-danger" target="_blank">
               <i class="bi bi-file-earmark-pdf me-1"></i> Baixar PDF
             </a>
@@ -429,12 +429,12 @@
             </button>
           </div>
         </div>
-        @if(auth()->user()?->hasRole('Administrador'))
-        <form id="form-delete-movement" action="{{ route('movements.destroy', $movement) }}" method="POST" class="d-none">
+        @can('manage-users')
+        <form id="form-delete-movement" action="{{ url('/movements/' . $movement->id) }}" method="POST" class="d-none">
           @csrf
           @method('DELETE')
         </form>
-        @endif
+        @endcan
       </div>
     </div>
   </div>
