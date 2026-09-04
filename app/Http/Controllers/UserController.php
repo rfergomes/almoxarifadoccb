@@ -50,7 +50,7 @@ class UserController extends Controller
             'status' => $data['status'],
         ]);
 
-        $user->assignRole($data['role']);
+        $user->syncRoles([$data['role']]);
 
         // Envio do e-mail de credenciais ao novo usuário
         try {
@@ -103,4 +103,29 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', "Senha do usuário '{$user->name}' redefinida com sucesso!");
     }
+
+    public function destroy(Request $request, User $user): RedirectResponse
+    {
+        // 1. Não é permitido excluir a própria conta conectada
+        if ($request->user()->id === $user->id) {
+            return back()->with('error', 'Não é possível excluir a sua própria conta de usuário conectada.');
+        }
+
+        // 2. Não é permitido excluir o último administrador do sistema
+        if ($user->hasRole('Administrador') && User::role('Administrador')->count() <= 1) {
+            return back()->with('error', 'Não é possível excluir o único Administrador ativo no sistema.');
+        }
+
+        // 3. Não é permitido excluir usuário com histórico de movimentações (auditoria)
+        if ($user->movements()->exists()) {
+            return back()->with('error', 'Este usuário possui movimentações de estoque registradas em seu nome e não pode ser excluído para preservar o histórico e a auditoria. Você pode alterar o seu status para Inativo.');
+        }
+
+        $userName = $user->name;
+        $user->syncRoles([]);
+        $user->delete();
+
+        return redirect()->route('users.index')->with('success', "Usuário '{$userName}' excluído com sucesso!");
+    }
 }
+

@@ -16,6 +16,69 @@ use Illuminate\Support\Str;
 
 class StockService
 {
+    public function __construct(
+        protected ?AttachmentService $attachmentService = null
+    ) {
+        $this->attachmentService = $attachmentService ?? app(AttachmentService::class);
+    }
+
+    /**
+     * Exclui uma movimentação e reverte o impacto em estoque dentro de uma transação atômica.
+     *
+     * @throws Exception
+     */
+    public function deleteMovement(Movement $movement): void
+    {
+        DB::transaction(function () use ($movement) {
+            $movement->load(['items.material', 'entryDocument.attachments', 'attachments']);
+
+            if ($movement->type === MovementType::ENTRY) {
+                // 1. Entrada: verifica se o saldo de cada material é suficiente para subtrair
+                foreach ($movement->items as $item) {
+                    $material = $item->material;
+                    if ($material->current_stock < $item->quantity) {
+                        throw new Exception("Não é possível excluir esta entrada pois causaria saldo negativo no material '{$material->name}'. Estoque atual: {$material->current_stock} {$material->unit_measure}, quantidade da entrada: {$item->quantity} {$material->unit_measure}.");
+                    }
+                }
+
+                // Subtrai o estoque adicionado pela entrada
+                foreach ($movement->items as $item) {
+                    $item->material->decrement('current_stock', $item->quantity);
+                }
+
+                // Remove documentos e anexos de entrada
+                if ($movement->entryDocument) {
+                    foreach ($movement->entryDocument->attachments as $att) {
+                        $this->attachmentService->deleteAttachment($att);
+                    }
+                    $movement->entryDocument->delete();
+                }
+            } elseif ($movement->type === MovementType::LOAN) {
+                // Empréstimo: estorna os itens que ainda não haviam sido devolvidos
+                foreach ($movement->items as $item) {
+                    $pending = $item->quantity - $item->returned_quantity;
+                    if ($pending > 0) {
+                        $item->material->increment('current_stock', $pending);
+                    }
+                }
+            } else {
+                // CONSUMPTION e EPI: os itens saíram do estoque, então estornamos somando de volta
+                foreach ($movement->items as $item) {
+                    $item->material->increment('current_stock', $item->quantity);
+                }
+            }
+
+            // Exclui anexos diretamente vinculados à movimentação
+            foreach ($movement->attachments as $att) {
+                $this->attachmentService->deleteAttachment($att);
+            }
+
+            // Exclui os itens da movimentação e o cabeçalho
+            $movement->items()->delete();
+            $movement->delete();
+        });
+    }
+
     /**
      * Lança uma movimentação de saída (Consumo, EPI ou Empréstimo) dentro de uma transação SQL.
      *

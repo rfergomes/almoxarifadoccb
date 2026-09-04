@@ -49,6 +49,11 @@ class Material extends Model
         return $this->hasMany(MovementItem::class);
     }
 
+    public function inventoryItems(): HasMany
+    {
+        return $this->hasMany(InventoryItem::class);
+    }
+
     public function isEpi(): bool
     {
         return $this->category && strtoupper($this->category->name) === 'EPI';

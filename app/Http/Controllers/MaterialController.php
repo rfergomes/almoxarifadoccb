@@ -117,4 +117,29 @@ class MaterialController extends Controller
             "Estoque de {$material->name} ajustado de {$oldStock} para {$newStock} unidades com sucesso!"
         );
     }
+
+    public function destroy(Request $request, Material $material): RedirectResponse
+    {
+        if (! $request->user()->hasRole('Administrador')) {
+            abort(403, 'Apenas administradores possuem permissão para excluir materiais do sistema.');
+        }
+
+        if ($material->movementItems()->exists()) {
+            return back()->with('error', "Não é possível excluir o material '{$material->name}' pois existem movimentações registradas em seu histórico. Para impedir seu uso em novas saídas, altere o status para Inativo.");
+        }
+
+        if ($material->current_stock > 0) {
+            return back()->with('error', "Não é possível excluir o material '{$material->name}' pois ele possui saldo físico em estoque ({$material->current_stock} {$material->unit_measure}). O saldo deve ser zero e sem movimentações vinculadas.");
+        }
+
+        if ($material->inventoryItems()->exists()) {
+            return back()->with('error', "Não é possível excluir o material '{$material->name}' pois ele está vinculado a contagens de inventário.");
+        }
+
+        $name = $material->name;
+        $material->delete();
+
+        return redirect()->route('materials.index')->with('success', "Material '{$name}' excluído com sucesso!");
+    }
 }
+

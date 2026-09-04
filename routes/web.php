@@ -45,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/movements', [MovementController::class, 'store'])->middleware('can:create-movements')->name('movements.store');
     Route::get('/movements/{movement}', [MovementController::class, 'show'])->middleware('can:view-movements')->name('movements.show');
     Route::get('/movements/{movement}/pdf', [MovementController::class, 'exportPdf'])->middleware('can:view-movements')->name('movements.pdf');
+    Route::delete('/movements/{movement}', [MovementController::class, 'destroy'])->middleware('can:manage-users')->name('movements.destroy');
     Route::post('/movements/items/{item}/return', [MovementController::class, 'returnItem'])->middleware('can:create-movements')->name('movements.items.return');
 
     // Entradas de Estoque (NF / Doações)
@@ -65,6 +66,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->middleware('can:manage-users')->name('users.index');
     Route::post('/users', [UserController::class, 'store'])->middleware('can:manage-users')->name('users.store');
     Route::put('/users/{user}', [UserController::class, 'update'])->middleware('can:manage-users')->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->middleware('can:manage-users')->name('users.destroy');
     Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->middleware('can:manage-users')->name('users.reset-password');
 
     // Configurações do Sistema
@@ -90,6 +92,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/materials', [MaterialController::class, 'index'])->middleware('can:view-materials')->name('materials.index');
     Route::post('/materials', [MaterialController::class, 'store'])->middleware('can:manage-materials')->name('materials.store');
     Route::put('/materials/{material}', [MaterialController::class, 'update'])->middleware('can:manage-materials')->name('materials.update');
+    Route::delete('/materials/{material}', [MaterialController::class, 'destroy'])->middleware('can:manage-users')->name('materials.destroy');
     Route::post('/materials/{material}/adjust-stock', [MaterialController::class, 'adjustStock'])->middleware('can:manage-materials')->name('materials.adjust-stock');
 
     // Beneficiários

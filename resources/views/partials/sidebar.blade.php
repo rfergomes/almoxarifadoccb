@@ -19,13 +19,13 @@
 
         @can('view-movements')
         <li class="nav-item">
-          <a href="{{ route('movements.index') }}" class="nav-link {{ request()->routeIs('movements.index') || request()->routeIs('movements.create') || request()->routeIs('movements.show') ? 'active' : '' }}" title="Saídas & Empréstimos">
+          <a href="{{ route('movements.index') }}" class="nav-link {{ (request()->routeIs('movements.index') || request()->routeIs('movements.create') || (request()->routeIs('movements.show') && isset($movement) && $movement->type !== \App\Enums\MovementType::ENTRY)) ? 'active' : '' }}" title="Saídas & Empréstimos">
             <i class="nav-icon bi bi-arrow-left-right text-success me-2"></i>
             <p>Saídas</p>
           </a>
         </li>
         <li class="nav-item">
-          <a href="{{ route('entries.index') }}" class="nav-link {{ request()->routeIs('entries.*') ? 'active' : '' }}" title="Entradas por Nota Fiscal ou Doação">
+          <a href="{{ route('entries.index') }}" class="nav-link {{ (request()->routeIs('entries.*') || (request()->routeIs('movements.show') && isset($movement) && $movement->type === \App\Enums\MovementType::ENTRY)) ? 'active' : '' }}" title="Entradas por Nota Fiscal ou Doação">
             <i class="nav-icon bi bi-box-arrow-in-down text-info me-2"></i>
             <p>Entradas</p>
           </a>

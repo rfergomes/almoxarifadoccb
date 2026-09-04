@@ -32,33 +32,31 @@
             </td>
             <td>{{ $usr->email }}</td>
             <td>
-              @foreach($usr->roles as $role)
-                @if($role->name === 'Administrador')
-                  <span class="badge bg-danger fs-6 role-badge" 
-                        data-bs-toggle="tooltip" 
-                        data-bs-placement="top" 
-                        data-bs-custom-class="custom-tooltip"
-                        title="Administrador: Acesso total ao sistema, gestão de usuários, relatórios gerenciais, auditorias e todos os cadastros.">
-                    <i class="bi bi-shield-fill-check me-1"></i>Administrador
-                  </span>
-                @elseif($role->name === 'Almoxarife')
-                  <span class="badge bg-primary fs-6 role-badge" 
-                        data-bs-toggle="tooltip" 
-                        data-bs-placement="top" 
-                        data-bs-custom-class="custom-tooltip"
-                        title="Almoxarife: Operações do dia a dia: lança saídas, empréstimos, devoluções, entradas por NF/doação e cadastra materiais/beneficiários.">
-                    <i class="bi bi-box-seam me-1"></i>Almoxarife
-                  </span>
-                @else
-                  <span class="badge bg-secondary fs-6 role-badge" 
-                        data-bs-toggle="tooltip" 
-                        data-bs-placement="top" 
-                        data-bs-custom-class="custom-tooltip"
-                        title="Consulta: Acesso somente de leitura: visualiza relatórios, movimentações, estoque e cadastros sem permissão para alteração.">
-                    <i class="bi bi-eye me-1"></i>Consulta
-                  </span>
-                @endif
-              @endforeach
+              @if($usr->primary_role === 'Administrador')
+                <span class="badge bg-danger fs-6 role-badge" 
+                      data-bs-toggle="tooltip" 
+                      data-bs-placement="top" 
+                      data-bs-custom-class="custom-tooltip"
+                      title="Administrador: Acesso total ao sistema, gestão de usuários, relatórios gerenciais, auditorias e todos os cadastros.">
+                  <i class="bi bi-shield-fill-check me-1"></i>Administrador
+                </span>
+              @elseif($usr->primary_role === 'Almoxarife')
+                <span class="badge bg-primary fs-6 role-badge" 
+                      data-bs-toggle="tooltip" 
+                      data-bs-placement="top" 
+                      data-bs-custom-class="custom-tooltip"
+                      title="Almoxarife: Operações do dia a dia: lança saídas, empréstimos, devoluções, entradas por NF/doação e cadastra materiais/beneficiários.">
+                  <i class="bi bi-box-seam me-1"></i>Almoxarife
+                </span>
+              @else
+                <span class="badge bg-secondary fs-6 role-badge" 
+                      data-bs-toggle="tooltip" 
+                      data-bs-placement="top" 
+                      data-bs-custom-class="custom-tooltip"
+                      title="Consulta: Acesso somente de leitura: visualiza relatórios, movimentações, estoque e cadastros sem permissão para alteração.">
+                  <i class="bi bi-eye me-1"></i>Consulta
+                </span>
+              @endif
             </td>
             <td>
               @if($usr->status)
@@ -75,19 +73,34 @@
                         data-id="{{ $usr->id }}"
                         data-name="{{ $usr->name }}"
                         data-email="{{ $usr->email }}"
-                        data-role="{{ $usr->roles->first()?->name }}"
+                        data-role="{{ $usr->primary_role }}"
                         data-status="{{ $usr->status ? '1' : '0' }}"
                         title="Editar Perfil / Dados">
                   <i class="bi bi-pencil"></i> Editar
                 </button>
                 <button type="button" 
-                        class="btn btn-outline-warning btn-sm rounded-end-pill btn-reset-user-password"
+                        class="btn btn-outline-warning btn-sm {{ Auth::id() === $usr->id ? 'rounded-end-pill' : '' }} btn-reset-user-password"
                         data-id="{{ $usr->id }}"
                         data-name="{{ $usr->name }}"
                         title="Redefinir Senha">
                   <i class="bi bi-key"></i> Senha
                 </button>
+                @if(Auth::id() !== $usr->id)
+                <button type="button" 
+                        class="btn btn-outline-danger btn-sm rounded-end-pill btn-delete-user"
+                        data-id="{{ $usr->id }}"
+                        data-name="{{ $usr->name }}"
+                        title="Excluir Usuário">
+                  <i class="bi bi-trash"></i> Excluir
+                </button>
+                @endif
               </div>
+              @if(Auth::id() !== $usr->id)
+              <form id="form-delete-user-{{ $usr->id }}" action="{{ route('users.destroy', $usr) }}" method="POST" class="d-none">
+                @csrf
+                @method('DELETE')
+              </form>
+              @endif
             </td>
           </tr>
           @empty
@@ -257,6 +270,21 @@
         document.getElementById('resetUserName').textContent = btn.dataset.name;
 
         modalReset.show();
+      });
+    });
+
+    document.querySelectorAll('.btn-delete-user').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const userId = this.dataset.id;
+        const userName = this.dataset.name;
+        confirmAction({
+          title: 'Excluir Usuário?',
+          text: `Deseja realmente remover o usuário "${userName}"? Esta ação não poderá ser desfeita se o usuário não possuir movimentações vinculadas.`,
+          icon: 'warning',
+          confirmButtonColor: '#d33',
+          confirmButtonText: 'Sim, excluir!',
+          formId: `form-delete-user-${userId}`
+        });
       });
     });
   });

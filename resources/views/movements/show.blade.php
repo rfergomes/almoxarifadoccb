@@ -412,10 +412,15 @@
 
         <!-- Botões de Impressão e Exportação em PDF -->
         <div class="d-flex justify-content-between align-items-center pt-3 border-top no-print">
-          <a href="{{ route('movements.index') }}" class="btn btn-light">
+          <a href="{{ $movement->type === \App\Enums\MovementType::ENTRY ? route('entries.index') : route('movements.index') }}" class="btn btn-light">
             <i class="bi bi-arrow-left me-1"></i> Voltar
           </a>
           <div class="btn-group">
+            @if(auth()->user()?->hasRole('Administrador'))
+            <button type="button" class="btn btn-outline-danger btn-delete-movement" data-code="{{ $movement->code }}">
+              <i class="bi bi-trash me-1"></i> Excluir Movimentação
+            </button>
+            @endif
             <a href="{{ route('movements.pdf', $movement) }}" class="btn btn-outline-danger" target="_blank">
               <i class="bi bi-file-earmark-pdf me-1"></i> Baixar PDF
             </a>
@@ -424,6 +429,12 @@
             </button>
           </div>
         </div>
+        @if(auth()->user()?->hasRole('Administrador'))
+        <form id="form-delete-movement" action="{{ route('movements.destroy', $movement) }}" method="POST" class="d-none">
+          @csrf
+          @method('DELETE')
+        </form>
+        @endif
       </div>
     </div>
   </div>
@@ -483,6 +494,21 @@
         modalReturnItem.show();
       });
     });
+
+    const btnDelete = document.querySelector('.btn-delete-movement');
+    if (btnDelete) {
+      btnDelete.addEventListener('click', function() {
+        const code = this.dataset.code;
+        confirmAction({
+          title: 'Excluir Movimentação?',
+          text: `Deseja realmente excluir a movimentação "${code}"? Os saldos dos materiais no estoque serão estornados automaticamente. Esta ação não poderá ser desfeita!`,
+          icon: 'warning',
+          confirmButtonColor: '#d33',
+          confirmButtonText: 'Sim, excluir e estornar!',
+          formId: 'form-delete-movement'
+        });
+      });
+    }
   });
 </script>
 @endpush

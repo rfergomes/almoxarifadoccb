@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\MovementType;
 use App\Http\Requests\ReturnItemRequest;
 use App\Http\Requests\StoreMovementRequest;
 use App\Models\Beneficiary;
@@ -16,6 +17,7 @@ use App\Services\StockService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 
@@ -28,7 +30,8 @@ class MovementController extends Controller
 
     public function index(): View
     {
-        $movements = Movement::with(['user', 'beneficiary', 'destination', 'items.material'])
+        $movements = Movement::where('type', '!=', MovementType::ENTRY)
+            ->with(['user', 'beneficiary', 'destination', 'items.material'])
             ->latest()
             ->paginate(15);
 
@@ -90,4 +93,25 @@ class MovementController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
+    public function destroy(Request $request, Movement $movement): RedirectResponse
+    {
+        if (! $request->user()->hasRole('Administrador')) {
+            abort(403, 'Apenas administradores possuem permissão para excluir movimentações do sistema.');
+        }
+
+        $code = $movement->code;
+        $redirectRoute = $movement->type === MovementType::ENTRY ? 'entries.index' : 'movements.index';
+
+        try {
+            $this->stockService->deleteMovement($movement);
+
+            return redirect()
+                ->route($redirectRoute)
+                ->with('success', "Movimentação '{$code}' e seus registros de estoque foram excluídos e estornados com sucesso!");
+        } catch (Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
 }
+
