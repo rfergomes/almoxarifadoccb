@@ -44,8 +44,28 @@
     .developer-link:hover { color: #0a58ca; text-decoration: underline; }
     .select2-container--bootstrap-5 .select2-selection { border-radius: 0.375rem; }
     @media print {
-      body, .app-wrapper, .app-main, .app-content { overflow: visible !important; height: auto !important; position: static !important; background: #fff !important; }
-      .app-sidebar, .app-header, .app-footer, .app-content-header, .btn, .alert, .modal, .no-print { display: none !important; }
+      body, body.layout-fixed, .app-wrapper, .app-main-wrapper, .app-main, .sidebar-expand-lg.layout-fixed .app-main, .app-content, .container-fluid {
+        overflow: visible !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        position: static !important;
+        background: #fff !important;
+        background-color: #fff !important;
+        color: #000 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        grid-template-areas: none !important;
+        grid-template-columns: none !important;
+        grid-gap: 0 !important;
+        flex: none !important;
+        transform: none !important;
+      }
+      .app-sidebar, .app-header, .app-footer, .app-content-header, .sidebar, .navbar, .btn, .alert, .modal, .no-print { display: none !important; }
     }
   </style>
   @stack('styles')

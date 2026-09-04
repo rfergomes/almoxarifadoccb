@@ -90,15 +90,23 @@
 
   html,
   body,
-  .app-wrapper,
-  .app-main,
-  .app-content,
-  .container-fluid,
   body.layout-fixed,
+  .app-wrapper,
   .layout-fixed .app-wrapper,
-  .layout-fixed .app-main {
+  .app-main-wrapper,
+  .layout-fixed .app-main-wrapper,
+  .app-main,
+  .layout-fixed .app-main,
+  .sidebar-expand-sm.layout-fixed .app-main,
+  .sidebar-expand-md.layout-fixed .app-main,
+  .sidebar-expand-lg.layout-fixed .app-main,
+  .sidebar-expand-xl.layout-fixed .app-main,
+  .sidebar-expand-xxl.layout-fixed .app-main,
+  .sidebar-expand.layout-fixed .app-main,
+  .app-content,
+  .container-fluid {
     height: auto !important;
-    min-height: auto !important;
+    min-height: 0 !important;
     max-height: none !important;
     overflow: visible !important;
     position: static !important;
@@ -109,7 +117,15 @@
     background: #ffffff !important;
     color: #000000 !important;
     width: 100% !important;
+    min-width: 0 !important;
     max-width: 100% !important;
+    grid-template-areas: none !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+    grid-gap: 0 !important;
+    flex: none !important;
+    float: none !important;
+    transform: none !important;
   }
 
   /* Ocultar elementos de layout e navegação que não devem ser impressos */

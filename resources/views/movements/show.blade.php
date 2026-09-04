@@ -10,51 +10,160 @@
       size: A4 portrait;
       margin: 8mm 10mm;
     }
-    html, body, .app-wrapper, .app-main, .app-content, .container-fluid, .row, .col-lg-10 {
-      background-color: #fff !important;
+
+    /* Reset estrito dos wrappers e do layout-fixed do AdminLTE 4 */
+    html,
+    body,
+    body.layout-fixed,
+    .app-wrapper,
+    .layout-fixed .app-wrapper,
+    .app-main-wrapper,
+    .layout-fixed .app-main-wrapper,
+    .app-main,
+    .layout-fixed .app-main,
+    .sidebar-expand-sm.layout-fixed .app-main,
+    .sidebar-expand-md.layout-fixed .app-main,
+    .sidebar-expand-lg.layout-fixed .app-main,
+    .sidebar-expand-xl.layout-fixed .app-main,
+    .sidebar-expand-xxl.layout-fixed .app-main,
+    .sidebar-expand.layout-fixed .app-main,
+    .app-content,
+    .container-fluid,
+    .row.justify-content-center,
+    .col-lg-10 {
+      background-color: #ffffff !important;
+      background: #ffffff !important;
       font-size: 12px !important;
-      color: #000 !important;
+      color: #000000 !important;
       margin: 0 !important;
       padding: 0 !important;
       width: 100% !important;
+      min-width: 0 !important;
       max-width: 100% !important;
       overflow: visible !important;
       height: auto !important;
+      min-height: 0 !important;
       position: static !important;
       display: block !important;
       float: none !important;
+      grid-template-areas: none !important;
+      grid-template-columns: none !important;
+      grid-template-rows: none !important;
+      grid-gap: 0 !important;
+      flex: none !important;
+      transform: none !important;
     }
-    .app-sidebar, .app-header, .app-footer, .app-content-header, .btn, .alert, .modal, .no-print, .btn-group {
+
+    /* Ocultação rigorosa de elementos não imprimíveis */
+    .app-sidebar,
+    .app-header,
+    .app-footer,
+    .app-content-header,
+    .sidebar,
+    .navbar,
+    .btn,
+    .alert,
+    .modal,
+    .no-print,
+    .btn-group {
       display: none !important;
     }
-    .card, .printable-receipt {
+
+    /* Contêiner Oficial do Comprovante */
+    .card.printable-receipt,
+    .printable-receipt {
       border: none !important;
       box-shadow: none !important;
       padding: 0 !important;
       margin: 0 !important;
       width: 100% !important;
       max-width: 100% !important;
+      min-width: 0 !important;
       background: transparent !important;
+      display: block !important;
     }
-    .card-body {
+
+    .printable-receipt .card-body {
       padding: 0 !important;
     }
+
+    /* Preservação e Diagramação do Grid Interno */
+    .printable-receipt .row {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: wrap !important;
+      margin-left: -0.5rem !important;
+      margin-right: -0.5rem !important;
+      width: auto !important;
+      float: none !important;
+    }
+
+    .printable-receipt [class*="col-"] {
+      display: block !important;
+      float: none !important;
+      padding-left: 0.5rem !important;
+      padding-right: 0.5rem !important;
+      box-sizing: border-box !important;
+    }
+
+    .printable-receipt .col-12 {
+      width: 100% !important;
+      flex: 0 0 100% !important;
+      max-width: 100% !important;
+    }
+
+    .printable-receipt .col-6 {
+      width: 50% !important;
+      flex: 0 0 50% !important;
+      max-width: 50% !important;
+    }
+
+    .printable-receipt .col-md-3,
+    .printable-receipt .col-3 {
+      width: 25% !important;
+      flex: 0 0 25% !important;
+      max-width: 25% !important;
+    }
+
+    .printable-receipt .col-md-4,
+    .printable-receipt .col-4 {
+      width: 33.333333% !important;
+      flex: 0 0 33.333333% !important;
+      max-width: 33.333333% !important;
+    }
+
+    /* Tabela de Itens */
     .table-responsive {
       overflow: visible !important;
       display: block !important;
       width: 100% !important;
+      margin: 0 0 15px 0 !important;
     }
+
     .table {
       font-size: 11px !important;
       width: 100% !important;
       margin-bottom: 15px !important;
       border-collapse: collapse !important;
     }
-    .table th, .table td {
-      padding: 5px 8px !important;
-      color: #000 !important;
-      border: 1px solid #dee2e6 !important;
+
+    .table th,
+    .table td {
+      padding: 4px 6px !important;
+      color: #000000 !important;
+      border: 1px solid #c0c0c0 !important;
     }
+
+    .table thead {
+      display: table-header-group !important;
+    }
+
+    .table tr {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Assinaturas lado a lado */
     .d-print-block {
       display: block !important;
       page-break-inside: avoid !important;
