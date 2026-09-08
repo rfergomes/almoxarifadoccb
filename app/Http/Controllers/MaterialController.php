@@ -49,7 +49,7 @@ class MaterialController extends Controller
             $query->withPatrimony();
         }
 
-        $materials = $query->latest()->paginate(15)->withQueryString();
+        $materials = $query->orderBy('name', 'asc')->paginate(15)->withQueryString();
         $categories = Category::orderBy('name')->get();
 
         return view('materials.index', compact('materials', 'categories'));

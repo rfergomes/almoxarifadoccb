@@ -284,4 +284,131 @@ class MaterialSkuAndDeletionFixTest extends TestCase
             'current_stock' => 'O campo estoque inicial deve ser um número inteiro.',
         ]);
     }
+
+    /**
+     * US1: Materiais na listagem principal são ordenados alfabeticamente pelo nome (A-Z).
+     */
+    public function test_materials_are_ordered_alphabetically_by_name(): void
+    {
+        Material::create([
+            'name' => 'MARTELO DE BORRACHA',
+            'code_sku' => 'CCB-001',
+            'category_id' => $this->category->id,
+            'unit_measure' => 'UN',
+            'current_stock' => 3,
+            'minimum_stock' => 1,
+            'is_returnable' => true,
+        ]);
+
+        Material::create([
+            'name' => 'ARAME GALVANIZADO',
+            'code_sku' => 'CCB-002',
+            'category_id' => $this->category->id,
+            'unit_measure' => 'KG',
+            'current_stock' => 5,
+            'minimum_stock' => 1,
+            'is_returnable' => false,
+        ]);
+
+        Material::create([
+            'name' => 'ZARCÃO ANTIFERRUGEM',
+            'code_sku' => 'CCB-003',
+            'category_id' => $this->category->id,
+            'unit_measure' => 'GL',
+            'current_stock' => 2,
+            'minimum_stock' => 1,
+            'is_returnable' => false,
+        ]);
+
+        Material::create([
+            'name' => 'BROCA DE VÍDEA 8MM',
+            'code_sku' => 'CCB-004',
+            'category_id' => $this->category->id,
+            'unit_measure' => 'UN',
+            'current_stock' => 10,
+            'minimum_stock' => 2,
+            'is_returnable' => false,
+        ]);
+
+        $response = $this->actingAs($this->admin)->get(route('materials.index'));
+        $response->assertOk();
+
+        $materials = $response->viewData('materials');
+        $names = $materials->pluck('name')->toArray();
+
+        $this->assertSame([
+            'ARAME GALVANIZADO',
+            'BROCA DE VÍDEA 8MM',
+            'MARTELO DE BORRACHA',
+            'ZARCÃO ANTIFERRUGEM',
+        ], $names);
+    }
+
+    /**
+     * US2: Mantém ordenação alfabética com filtros e paginação.
+     */
+    public function test_materials_maintain_alphabetical_order_with_filters_and_pagination(): void
+    {
+        $outraCategoria = Category::create([
+            'name' => 'Outra Categoria',
+            'slug' => 'outra-categoria',
+            'active' => true,
+        ]);
+
+        Material::create([
+            'name' => 'SERROTE MANUAL',
+            'code_sku' => 'CCB-101',
+            'category_id' => $this->category->id,
+            'unit_measure' => 'UN',
+            'current_stock' => 2,
+            'minimum_stock' => 1,
+            'is_returnable' => true,
+        ]);
+
+        Material::create([
+            'name' => 'ALICATE UNIVERSAL',
+            'code_sku' => 'CCB-102',
+            'category_id' => $this->category->id,
+            'unit_measure' => 'UN',
+            'current_stock' => 4,
+            'minimum_stock' => 1,
+            'is_returnable' => true,
+        ]);
+
+        Material::create([
+            'name' => 'CHAVE DE FENDA',
+            'code_sku' => 'CCB-103',
+            'category_id' => $this->category->id,
+            'unit_measure' => 'UN',
+            'current_stock' => 6,
+            'minimum_stock' => 1,
+            'is_returnable' => true,
+        ]);
+
+        // Item de outra categoria não deve vir no filtro
+        Material::create([
+            'name' => 'ABRACADEIRA NYLON',
+            'code_sku' => 'CCB-104',
+            'category_id' => $outraCategoria->id,
+            'unit_measure' => 'PCT',
+            'current_stock' => 10,
+            'minimum_stock' => 2,
+            'is_returnable' => false,
+        ]);
+
+        $response = $this->actingAs($this->admin)->get(route('materials.index', [
+            'category_id' => $this->category->id,
+        ]));
+
+        $response->assertOk();
+        $materials = $response->viewData('materials');
+        $names = $materials->pluck('name')->toArray();
+
+        $this->assertSame([
+            'ALICATE UNIVERSAL',
+            'CHAVE DE FENDA',
+            'SERROTE MANUAL',
+        ], $names);
+    }
 }
+
