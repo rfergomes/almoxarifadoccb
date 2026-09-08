@@ -39,6 +39,38 @@ class Material extends Model
         'status' => 'boolean',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (Material $material): void {
+            if (empty(trim((string) $material->code_sku))) {
+                $material->code_sku = static::generateNextSku();
+            }
+        });
+    }
+
+    /**
+     * Gera o próximo código sequencial de SKU no formato GEN-### (ex: GEN-001, GEN-002, etc.).
+     */
+    public static function generateNextSku(): string
+    {
+        $existingSkus = static::where('code_sku', 'LIKE', 'GEN-%')->pluck('code_sku');
+
+        $maxNumber = 0;
+        foreach ($existingSkus as $sku) {
+            if (is_string($sku) && preg_match('/^GEN-(\d+)$/', $sku, $matches)) {
+                $num = (int) $matches[1];
+                if ($num > $maxNumber) {
+                    $maxNumber = $num;
+                }
+            }
+        }
+
+        $nextNumber = $maxNumber + 1;
+        $padded = str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT);
+
+        return "GEN-{$padded}";
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

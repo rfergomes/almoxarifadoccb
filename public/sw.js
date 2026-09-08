@@ -55,16 +55,32 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Ignorar chamadas de API ou login especificamente ativas se necessário
+  const url = new URL(event.request.url);
+
+  // Ignora esquemas não suportados pelo Cache API (ex: chrome-extension://)
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    return;
+  }
+
+  // Ignora serviços de terceiros e telemetria externa (evita erros de CORS/Beacon)
+  if (url.hostname.includes('cloudflareinsights.com')) {
+    return;
+  }
+
+  // Interceptação segura
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
         // Se a resposta for válida, armazena uma cópia no cache estático
-        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
+        if (networkResponse && networkResponse.status === 200 && (networkResponse.type === 'basic' || networkResponse.type === 'cors')) {
+          if (event.request.url.startsWith('http://') || event.request.url.startsWith('https://')) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache).catch(() => {
+                // Ignora falhas pontuais de armazenamento em cache
+              });
+            });
+          }
         }
         return networkResponse;
       })
@@ -76,9 +92,15 @@ self.addEventListener('fetch', (event) => {
         }
 
         // Se a requisição for para uma navegação HTML, exibe a página offline
-        if (event.request.mode === 'navigate' || event.request.headers.get('accept').includes('text/html')) {
-          return caches.match('/offline.html');
+        if (event.request.mode === 'navigate' || (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html'))) {
+          const offlinePage = await caches.match('/offline.html');
+          if (offlinePage) {
+            return offlinePage;
+          }
         }
+
+        // Retorna Response com status de serviço indisponível em vez de undefined
+        return new Response('', { status: 503, statusText: 'Service Unavailable (Offline)' });
       })
   );
 });

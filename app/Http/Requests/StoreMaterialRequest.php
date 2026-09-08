@@ -18,7 +18,7 @@ class StoreMaterialRequest extends FormRequest
         $materialId = $this->route('material')?->id ?? $this->route('material');
 
         return [
-            'code_sku' => ['required', 'string', 'max:50', 'unique:materials,code_sku,' . $materialId],
+            'code_sku' => ['nullable', 'string', 'max:50', 'unique:materials,code_sku,' . $materialId],
             'name' => ['required', 'string', 'max:150'],
             'category_id' => ['required', 'exists:categories,id'],
             'unit_measure' => ['required', 'string', 'max:10'],
