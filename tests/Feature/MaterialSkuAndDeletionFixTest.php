@@ -175,17 +175,17 @@ class MaterialSkuAndDeletionFixTest extends TestCase
 
         $material = Material::where('name', 'Item Sem SKU Informado')->first();
         $this->assertNotNull($material);
-        $this->assertSame('GEN-001', $material->code_sku);
+        $this->assertSame('CCB-001', $material->code_sku);
     }
 
     /**
-     * US3: Incrementa sequencialmente o SKU baseado no maior número existente.
+     * US3: Incrementa sequencialmente o SKU baseado no maior número existente com CCB-.
      */
-    public function test_increments_sequential_sku_based_on_highest_existing_gen_code(): void
+    public function test_increments_sequential_sku_based_on_highest_existing_ccb_code(): void
     {
         Material::create([
-            'code_sku' => 'GEN-001',
-            'name' => 'Primeiro Generico',
+            'code_sku' => 'CCB-001',
+            'name' => 'Primeiro CCB',
             'category_id' => $this->category->id,
             'unit_measure' => 'UN',
             'current_stock' => 1,
@@ -194,8 +194,8 @@ class MaterialSkuAndDeletionFixTest extends TestCase
         ]);
 
         Material::create([
-            'code_sku' => 'GEN-009',
-            'name' => 'Nono Generico',
+            'code_sku' => 'CCB-009',
+            'name' => 'Nono CCB',
             'category_id' => $this->category->id,
             'unit_measure' => 'UN',
             'current_stock' => 1,
@@ -203,10 +203,10 @@ class MaterialSkuAndDeletionFixTest extends TestCase
             'is_returnable' => false,
         ]);
 
-        // Próximo deve ser GEN-010
+        // Próximo deve ser CCB-010
         $response = $this->actingAs($this->admin)->post(route('materials.store'), [
             'code_sku' => '',
-            'name' => 'Decimo Generico',
+            'name' => 'Decimo CCB',
             'category_id' => $this->category->id,
             'unit_measure' => 'UN',
             'current_stock' => 1,
@@ -216,9 +216,9 @@ class MaterialSkuAndDeletionFixTest extends TestCase
 
         $response->assertRedirect(route('materials.index'));
 
-        $material = Material::where('name', 'Decimo Generico')->first();
+        $material = Material::where('name', 'Decimo CCB')->first();
         $this->assertNotNull($material);
-        $this->assertSame('GEN-010', $material->code_sku);
+        $this->assertSame('CCB-010', $material->code_sku);
     }
 
     /**
@@ -261,7 +261,7 @@ class MaterialSkuAndDeletionFixTest extends TestCase
         $response->assertJson([
             'success' => true,
             'data' => [
-                'code_sku' => 'GEN-001',
+                'code_sku' => 'CCB-001',
                 'name' => 'Broca 10mm Rapida',
             ],
         ]);

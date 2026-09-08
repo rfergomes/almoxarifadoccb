@@ -49,15 +49,15 @@ class Material extends Model
     }
 
     /**
-     * Gera o próximo código sequencial de SKU no formato GEN-### (ex: GEN-001, GEN-002, etc.).
+     * Gera o próximo código sequencial de SKU no formato CCB-### (ex: CCB-001, CCB-002, etc.).
      */
     public static function generateNextSku(): string
     {
-        $existingSkus = static::where('code_sku', 'LIKE', 'GEN-%')->pluck('code_sku');
+        $existingSkus = static::where('code_sku', 'LIKE', 'CCB-%')->pluck('code_sku');
 
         $maxNumber = 0;
         foreach ($existingSkus as $sku) {
-            if (is_string($sku) && preg_match('/^GEN-(\d+)$/', $sku, $matches)) {
+            if (is_string($sku) && preg_match('/^CCB-(\d+)$/', $sku, $matches)) {
                 $num = (int) $matches[1];
                 if ($num > $maxNumber) {
                     $maxNumber = $num;
@@ -68,7 +68,7 @@ class Material extends Model
         $nextNumber = $maxNumber + 1;
         $padded = str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT);
 
-        return "GEN-{$padded}";
+        return "CCB-{$padded}";
     }
 
     public function category(): BelongsTo

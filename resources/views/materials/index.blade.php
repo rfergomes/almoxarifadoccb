@@ -213,7 +213,7 @@
         <div class="row g-3">
           <div class="col-md-4">
             <label class="form-label">Código SKU <small class="text-muted">(Opcional)</small></label>
-            <input type="text" name="code_sku" class="form-control" placeholder="Vazio para gerar automático (GEN-001)">
+            <input type="text" name="code_sku" class="form-control" placeholder="Vazio gera automático CCB-001">
           </div>
           <div class="col-md-8">
             <label class="form-label">Nome do Material *</label>
