@@ -8,6 +8,7 @@ use App\Http\Requests\StoreMaterialRequest;
 use App\Models\Category;
 use App\Models\Material;
 use App\Services\AttachmentService;
+use App\Services\MaterialImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -16,7 +17,8 @@ use Illuminate\View\View;
 class MaterialController extends Controller
 {
     public function __construct(
-        protected AttachmentService $attachmentService
+        protected AttachmentService $attachmentService,
+        protected MaterialImageService $materialImageService,
     ) {}
 
     public function index(Request $request): View
@@ -57,7 +59,15 @@ class MaterialController extends Controller
 
     public function store(StoreMaterialRequest $request): RedirectResponse
     {
-        Material::create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $this->materialImageService->uploadImage($request->file('image'));
+        }
+
+        unset($data['image']);
+
+        Material::create($data);
         return redirect()->route('materials.index')->with('success', 'Material cadastrado com sucesso!');
     }
 
@@ -75,10 +85,29 @@ class MaterialController extends Controller
             'expiration_date' => ['nullable', 'date'],
             'patrimony_code' => ['nullable', 'string', 'max:50', Rule::unique('materials', 'patrimony_code')->ignore($material->id)],
             'status' => ['required', 'boolean'],
+            'image' => ['nullable', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
+            'remove_image' => ['nullable', 'boolean'],
+        ], [
+            'image.image' => 'O arquivo enviado deve ser uma imagem válida.',
+            'image.mimes' => 'A imagem deve estar em um dos formatos: JPEG, PNG, JPG, WEBP ou GIF.',
+            'image.max' => 'A imagem não pode ultrapassar o tamanho máximo de 5MB.',
         ]);
 
         // Impede explicitamente a alteração direta de estoque no formulário de edição cadastral
         unset($data['current_stock']);
+
+        if (!empty($request->input('remove_image'))) {
+            $this->materialImageService->deleteImage($material->image_path);
+            $data['image_path'] = null;
+        } elseif ($request->hasFile('image')) {
+            $data['image_path'] = $this->materialImageService->replaceImage(
+                $request->file('image'),
+                $material->image_path
+            );
+        }
+
+        unset($data['remove_image']);
+        unset($data['image']);
 
         $material->update($data);
         return redirect()->route('materials.index')->with('success', 'Cadastro do material atualizado com sucesso! (Estoque inalterado)');
@@ -137,7 +166,12 @@ class MaterialController extends Controller
         }
 
         $name = $material->name;
+        $imagePath = $material->image_path;
         $material->delete();
+
+        if (!empty($imagePath)) {
+            $this->materialImageService->deleteImage($imagePath);
+        }
 
         return redirect()->route('materials.index')->with('success', "Material '{$name}' excluído com sucesso!");
     }

@@ -30,6 +30,7 @@ class StoreMaterialRequest extends FormRequest
             'patrimony_code' => ['nullable', 'string', 'max:50', 'unique:materials,patrimony_code,' . $materialId],
             'is_returnable' => ['nullable', 'boolean'],
             'status' => ['nullable', 'boolean'],
+            'image' => ['nullable', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
         ];
     }
 
@@ -48,6 +49,16 @@ class StoreMaterialRequest extends FormRequest
             'patrimony_code' => 'código de patrimônio',
             'is_returnable' => 'retornável',
             'status' => 'status',
+            'image' => 'imagem do material',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'image.image' => 'O arquivo enviado deve ser uma imagem válida.',
+            'image.mimes' => 'A imagem deve estar em um dos formatos: JPEG, PNG, JPG, WEBP ou GIF.',
+            'image.max' => 'A imagem não pode ultrapassar o tamanho máximo de 5MB.',
         ];
     }
 }

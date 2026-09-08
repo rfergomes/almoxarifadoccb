@@ -59,6 +59,7 @@
       <table class="table table-hover align-middle mb-0">
         <thead>
           <tr>
+            <th style="width: 60px;" class="text-center">Foto</th>
             <th>SKU</th>
             <th>Nome do Material</th>
             <th>Patrimônio</th>
@@ -76,6 +77,24 @@
         <tbody>
           @forelse($materials as $mat)
           <tr>
+            <td class="text-center align-middle py-1">
+              @if($mat->image_url)
+                <img src="{{ $mat->image_url }}" 
+                     alt="{{ $mat->name }}" 
+                     class="img-thumbnail rounded shadow-sm btn-preview-material-image"
+                     style="width: 45px; height: 45px; object-fit: cover; cursor: pointer;"
+                     data-image-url="{{ $mat->image_url }}"
+                     data-name="{{ $mat->name }}"
+                     data-sku="{{ $mat->code_sku }}"
+                     title="Clique para ampliar">
+              @else
+                <div class="bg-light text-muted d-inline-flex align-items-center justify-content-center border rounded" 
+                     style="width: 45px; height: 45px;" 
+                     title="Sem foto cadastrada">
+                  <i class="bi bi-image fs-5 text-secondary opacity-50"></i>
+                </div>
+              @endif
+            </td>
             <td class="fw-bold text-navy">{{ $mat->code_sku }}</td>
             <td>{{ $mat->name }}</td>
             <td>
@@ -152,6 +171,7 @@
                         data-expiration="{{ $mat->expiration_date?->format('Y-m-d') }}"
                         data-patrimony="{{ $mat->patrimony_code }}"
                         data-status="{{ $mat->status ? '1' : '0' }}"
+                        data-image-url="{{ $mat->image_url }}"
                         title="Editar Cadastro do Material">
                   <i class="bi bi-pencil"></i> Editar
                 </button>
@@ -185,7 +205,7 @@
           </tr>
           @empty
           <tr>
-            <td colspan="10" class="text-center py-4 text-muted">Nenhum material encontrado com os critérios selecionados.</td>
+            <td colspan="11" class="text-center py-4 text-muted">Nenhum material encontrado com os critérios selecionados.</td>
           </tr>
           @endforelse
         </tbody>
@@ -203,7 +223,7 @@
 <!-- Modal Criar Material -->
 <div class="modal fade" id="modalCreateMaterial" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <form action="{{ route('materials.store') }}" method="POST" class="modal-content">
+    <form action="{{ route('materials.store') }}" method="POST" enctype="multipart/form-data" class="modal-content">
       @csrf
       <div class="modal-header">
         <h5 class="modal-title fw-bold">Cadastrar Novo Material</h5>
@@ -265,6 +285,14 @@
             <label class="form-label">Validade CA (Exclusivo EPI)</label>
             <input type="date" name="ca_validity" class="form-control">
           </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold"><i class="bi bi-image text-primary me-1"></i>Foto do Produto / Material <small class="text-muted">(Opcional)</small></label>
+            <input type="file" name="image" id="create_material_image" class="form-control" accept="image/png,image/jpeg,image/webp,image/gif">
+            <div class="form-text text-muted small">Formatos aceitos: JPG, PNG, WEBP ou GIF (máx. 5MB).</div>
+            <div id="create_image_preview_container" class="mt-2 d-none">
+              <img id="create_image_preview" src="" alt="Prévia da foto" class="img-thumbnail rounded shadow-sm" style="max-height: 120px; object-fit: contain;">
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -278,7 +306,7 @@
 <!-- Modal Editar Material -->
 <div class="modal fade" id="modalEditMaterial" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <form id="formEditMaterial" method="POST" action="" class="modal-content">
+    <form id="formEditMaterial" method="POST" action="" enctype="multipart/form-data" class="modal-content">
       @csrf
       @method('PUT')
       <div class="modal-header">
@@ -344,6 +372,27 @@
             <label class="form-label">Validade CA (Exclusivo EPI)</label>
             <input type="date" name="ca_validity" id="edit_ca_validity" class="form-control">
           </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold"><i class="bi bi-image text-primary me-1"></i>Foto do Produto / Material <small class="text-muted">(Opcional)</small></label>
+            <div id="edit_current_image_container" class="d-none align-items-center gap-3 p-2 mb-2 bg-light border rounded">
+              <img id="edit_current_image_preview" src="" alt="Foto atual" class="img-thumbnail rounded" style="width: 60px; height: 60px; object-fit: cover;">
+              <div>
+                <span class="d-block fw-semibold small text-secondary">Foto atual cadastrada</span>
+                <div class="form-check mt-1">
+                  <input class="form-check-input" type="checkbox" name="remove_image" id="edit_remove_image" value="1">
+                  <label class="form-check-label text-danger small fw-semibold" for="edit_remove_image">
+                    <i class="bi bi-trash me-1"></i>Remover foto deste material
+                  </label>
+                </div>
+              </div>
+            </div>
+            <input type="file" name="image" id="edit_material_image" class="form-control" accept="image/png,image/jpeg,image/webp,image/gif">
+            <div class="form-text text-muted small">Selecione apenas se desejar substituir a foto (JPG, PNG, WEBP ou GIF até 5MB).</div>
+            <div id="edit_new_image_preview_container" class="mt-2 d-none">
+              <span class="d-block text-muted small mb-1">Nova foto selecionada:</span>
+              <img id="edit_new_image_preview" src="" alt="Nova prévia" class="img-thumbnail rounded shadow-sm" style="max-height: 120px; object-fit: contain;">
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -391,13 +440,58 @@
 @endcan
 
 @include('partials.modal_attachment_preview')
+@include('partials.modal_material_image_preview')
 @endsection
 
 @push('scripts')
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    // Preview dinâmico para cadastro de material
+    const createImgInput = document.getElementById('create_material_image');
+    const createImgPreview = document.getElementById('create_image_preview');
+    const createImgContainer = document.getElementById('create_image_preview_container');
+
+    if (createImgInput) {
+      createImgInput.addEventListener('change', function() {
+        const file = this.files && this.files[0];
+        if (file) {
+          createImgPreview.src = URL.createObjectURL(file);
+          createImgContainer.classList.remove('d-none');
+        } else {
+          createImgPreview.src = '';
+          createImgContainer.classList.add('d-none');
+        }
+      });
+    }
+
+    const modalCreateElem = document.getElementById('modalCreateMaterial');
+    if (modalCreateElem) {
+      modalCreateElem.addEventListener('hidden.bs.modal', function() {
+        if (createImgInput) createImgInput.value = '';
+        if (createImgPreview) createImgPreview.src = '';
+        if (createImgContainer) createImgContainer.classList.add('d-none');
+      });
+    }
+
+    // Modal de Edição de Material
     const modalEdit = new bootstrap.Modal(document.getElementById('modalEditMaterial'));
     const formEdit = document.getElementById('formEditMaterial');
+    const editImgInput = document.getElementById('edit_material_image');
+    const editNewImg = document.getElementById('edit_new_image_preview');
+    const editNewContainer = document.getElementById('edit_new_image_preview_container');
+
+    if (editImgInput) {
+      editImgInput.addEventListener('change', function() {
+        const file = this.files && this.files[0];
+        if (file) {
+          editNewImg.src = URL.createObjectURL(file);
+          editNewContainer.classList.remove('d-none');
+        } else {
+          editNewImg.src = '';
+          editNewContainer.classList.add('d-none');
+        }
+      });
+    }
 
     document.querySelectorAll('.btn-edit-material').forEach(btn => {
       btn.addEventListener('click', function() {
@@ -414,9 +508,56 @@
         document.getElementById('edit_expiration_date').value = btn.dataset.expiration || '';
         document.getElementById('edit_patrimony_code').value = btn.dataset.patrimony || '';
 
+        // Gerenciamento da imagem existente no modal de edição
+        const currentImageUrl = btn.dataset.imageUrl;
+        const editCurrentContainer = document.getElementById('edit_current_image_container');
+        const editCurrentImg = document.getElementById('edit_current_image_preview');
+        const editRemoveCheck = document.getElementById('edit_remove_image');
+
+        if (editImgInput) editImgInput.value = '';
+        if (editNewContainer) editNewContainer.classList.add('d-none');
+        if (editNewImg) editNewImg.src = '';
+        if (editRemoveCheck) editRemoveCheck.checked = false;
+
+        if (currentImageUrl) {
+          editCurrentImg.src = currentImageUrl;
+          editCurrentContainer.classList.remove('d-none');
+          editCurrentContainer.classList.add('d-flex');
+        } else {
+          editCurrentImg.src = '';
+          editCurrentContainer.classList.add('d-none');
+          editCurrentContainer.classList.remove('d-flex');
+        }
+
         modalEdit.show();
       });
     });
+
+    // Modal de Visualização Ampliada da Imagem do Material
+    const modalImagePreviewElem = document.getElementById('modalMaterialImagePreview');
+    if (modalImagePreviewElem) {
+      const modalImagePreview = new bootstrap.Modal(modalImagePreviewElem);
+      const previewImg = document.getElementById('materialImagePreviewImg');
+      const previewName = document.getElementById('materialImagePreviewName');
+      const previewSku = document.getElementById('materialImagePreviewSku');
+      const previewDownload = document.getElementById('materialImageDownloadBtn');
+
+      document.querySelectorAll('.btn-preview-material-image').forEach(img => {
+        img.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const imageUrl = this.dataset.imageUrl;
+          const name = this.dataset.name;
+          const sku = this.dataset.sku;
+
+          previewImg.src = imageUrl;
+          previewName.textContent = name;
+          previewSku.textContent = sku;
+          if (previewDownload) previewDownload.href = imageUrl;
+
+          modalImagePreview.show();
+        });
+      });
+    }
 
     const modalAdjust = new bootstrap.Modal(document.getElementById('modalAdjustStock'));
     const formAdjust = document.getElementById('formAdjustStock');
