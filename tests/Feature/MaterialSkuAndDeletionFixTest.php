@@ -266,4 +266,22 @@ class MaterialSkuAndDeletionFixTest extends TestCase
             ],
         ]);
     }
+
+    /**
+     * Valida que mensagens de erro de validação são traduzidas para Português do Brasil (pt_BR).
+     */
+    public function test_validation_errors_are_in_portuguese(): void
+    {
+        $response = $this->actingAs($this->admin)->post(route('materials.store'), [
+            'name' => 'Teste Idioma',
+            'category_id' => $this->category->id,
+            'unit_measure' => 'UN',
+            'current_stock' => 'invalido',
+            'minimum_stock' => 5,
+        ]);
+
+        $response->assertSessionHasErrors([
+            'current_stock' => 'O campo estoque inicial deve ser um número inteiro.',
+        ]);
+    }
 }

@@ -1,5 +1,5 @@
 // Service Worker - Almoxarifado Central CCB
-const CACHE_NAME = 'ccb-almoxarifado-v1';
+const CACHE_NAME = 'ccb-almoxarifado-v2';
 
 const STATIC_ASSETS = [
   '/',
@@ -62,8 +62,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Ignora serviços de terceiros e telemetria externa (evita erros de CORS/Beacon)
-  if (url.hostname.includes('cloudflareinsights.com')) {
+  // Só intercepta requisições da própria aplicação ou da lista de assets estáticos essenciais
+  const isSameOrigin = url.origin === self.location.origin;
+  const isStaticAsset = STATIC_ASSETS.includes(event.request.url);
+
+  if (!isSameOrigin && !isStaticAsset) {
+    // Deixa o navegador processar via rede nativa (Kaspersky, Cloudflare, extensões, etc.)
     return;
   }
 

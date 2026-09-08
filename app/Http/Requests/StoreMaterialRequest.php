@@ -32,4 +32,22 @@ class StoreMaterialRequest extends FormRequest
             'status' => ['nullable', 'boolean'],
         ];
     }
+
+    public function attributes(): array
+    {
+        return [
+            'code_sku' => 'código SKU',
+            'name' => 'nome do material',
+            'category_id' => 'categoria',
+            'unit_measure' => 'unidade de medida',
+            'current_stock' => 'estoque inicial',
+            'minimum_stock' => 'estoque mínimo',
+            'ca_number' => 'número do CA',
+            'ca_validity' => 'validade do CA',
+            'expiration_date' => 'data de validade',
+            'patrimony_code' => 'código de patrimônio',
+            'is_returnable' => 'retornável',
+            'status' => 'status',
+        ];
+    }
 }
