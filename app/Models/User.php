@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -17,6 +18,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'avatar_path',
         'password',
         'status',
     ];
@@ -109,5 +111,31 @@ class User extends Authenticatable
             }
         }
         return $count;
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if (empty($this->avatar_path)) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->avatar_path);
+    }
+
+    public function hasAvatar(): bool
+    {
+        return !empty($this->avatar_path) && Storage::disk('public')->exists($this->avatar_path);
+    }
+
+    public function initials(): string
+    {
+        $words = preg_split('/\s+/', trim((string) $this->name));
+        if (empty($words) || empty($words[0])) {
+            return 'U';
+        }
+        if (count($words) === 1) {
+            return mb_strtoupper(mb_substr($words[0], 0, 2));
+        }
+        return mb_strtoupper(mb_substr($words[0], 0, 1) . mb_substr(end($words), 0, 1));
     }
 }

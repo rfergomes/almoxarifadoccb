@@ -27,8 +27,17 @@
         <tbody>
           @forelse($users as $usr)
           <tr>
-            <td class="fw-bold">
-              <i class="bi bi-person-circle text-primary me-2"></i>{{ $usr->name }}
+            <td>
+              <div class="d-flex align-items-center">
+                @if($usr->hasAvatar())
+                  <img src="{{ $usr->avatar_url }}" alt="{{ $usr->name }}" class="rounded-circle object-fit-cover me-2 border shadow-sm" style="width: 34px; height: 34px;">
+                @else
+                  <span class="avatar-placeholder rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center me-2 fw-bold text-uppercase shadow-sm" style="width: 34px; height: 34px; font-size: 0.75rem;">
+                    {{ $usr->initials() }}
+                  </span>
+                @endif
+                <span class="fw-bold">{{ $usr->name }}</span>
+              </div>
             </td>
             <td>{{ $usr->email }}</td>
             <td>
@@ -122,7 +131,7 @@
 <!-- Modal Criar Usuário -->
 <div class="modal fade" id="modalCreateUser" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
-    <form action="{{ route('users.store') }}" method="POST" class="modal-content">
+    <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data" class="modal-content">
       @csrf
       <div class="modal-header">
         <h5 class="modal-title fw-bold"><i class="bi bi-person-plus text-primary me-2"></i>Cadastrar Novo Usuário</h5>
@@ -136,6 +145,11 @@
         <div class="mb-3">
           <label class="form-label fw-semibold">E-mail Corporativo *</label>
           <input type="email" name="email" class="form-control" placeholder="Ex: daniel.oliveira@ccb.org.br" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Foto de Perfil (Opcional)</label>
+          <input type="file" name="avatar" class="form-control" accept="image/png,image/jpeg,image/webp,image/gif">
+          <small class="text-muted">Formatos JPG, PNG, WEBP ou GIF (máx 5MB).</small>
         </div>
         <div class="mb-3">
           <label class="form-label fw-semibold">Perfil / Nível de Acesso *</label>
@@ -174,7 +188,7 @@
 <!-- Modal Editar Usuário -->
 <div class="modal fade" id="modalEditUser" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
-    <form id="formEditUser" method="POST" action="" class="modal-content">
+    <form id="formEditUser" method="POST" action="" enctype="multipart/form-data" class="modal-content">
       @csrf
       @method('PUT')
       <div class="modal-header">
@@ -189,6 +203,11 @@
         <div class="mb-3">
           <label class="form-label fw-semibold">E-mail Corporativo *</label>
           <input type="email" name="email" id="edit_user_email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Alterar Foto de Perfil (Opcional)</label>
+          <input type="file" name="avatar" class="form-control" accept="image/png,image/jpeg,image/webp,image/gif">
+          <small class="text-muted">Deixe em branco para manter a foto atual.</small>
         </div>
         <div class="mb-3">
           <label class="form-label fw-semibold">Perfil / Nível de Acesso *</label>

@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\NewUserCredentialsMail;
 use App\Models\User;
+use App\Services\UserAvatarService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -18,6 +19,10 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    public function __construct(
+        protected UserAvatarService $userAvatarService
+    ) {}
+
     public function index(): View
     {
         $users = User::with('roles')->latest()->paginate(15);
@@ -34,6 +39,7 @@ class UserController extends Controller
             'password' => ['required', 'string', Password::defaults(), 'confirmed'],
             'role' => ['required', 'exists:roles,name'],
             'status' => ['required', 'boolean'],
+            'avatar' => ['nullable', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
         ], [
             'name.required' => 'Informe o nome completo do usuário.',
             'email.required' => 'Informe o e-mail corporativo.',
@@ -41,11 +47,20 @@ class UserController extends Controller
             'password.required' => 'Informe uma senha inicial para o usuário.',
             'password.confirmed' => 'A confirmação de senha não confere.',
             'role.required' => 'Selecione o perfil de acesso.',
+            'avatar.image' => 'O arquivo de foto deve ser uma imagem válida.',
+            'avatar.mimes' => 'A foto deve estar em formato JPG, PNG, WEBP ou GIF.',
+            'avatar.max' => 'A foto não pode ultrapassar 5MB.',
         ]);
+
+        $avatarPath = null;
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $this->userAvatarService->uploadAvatar($request->file('avatar'));
+        }
 
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'avatar_path' => $avatarPath,
             'password' => Hash::make($data['password']),
             'status' => $data['status'],
         ]);
@@ -71,17 +86,35 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:150', Rule::unique('users', 'email')->ignore($user->id)],
             'role' => ['required', 'exists:roles,name'],
             'status' => ['required', 'boolean'],
+            'avatar' => ['nullable', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
+            'remove_avatar' => ['nullable', 'boolean'],
+        ], [
+            'avatar.image' => 'O arquivo de foto deve ser uma imagem válida.',
+            'avatar.mimes' => 'A foto deve estar em formato JPG, PNG, WEBP ou GIF.',
+            'avatar.max' => 'A foto não pode ultrapassar 5MB.',
         ]);
 
         if ($request->user()->id === $user->id && ! $data['status']) {
             return back()->with('error', 'Você não pode inativar a sua própria conta de usuário.');
         }
 
-        $user->update([
+        $updateData = [
             'name' => $data['name'],
             'email' => $data['email'],
             'status' => $data['status'],
-        ]);
+        ];
+
+        if (!empty($request->input('remove_avatar'))) {
+            $this->userAvatarService->deleteAvatar($user->avatar_path);
+            $updateData['avatar_path'] = null;
+        } elseif ($request->hasFile('avatar')) {
+            $updateData['avatar_path'] = $this->userAvatarService->replaceAvatar(
+                $request->file('avatar'),
+                $user->avatar_path
+            );
+        }
+
+        $user->update($updateData);
 
         $user->syncRoles([$data['role']]);
 
@@ -122,8 +155,13 @@ class UserController extends Controller
         }
 
         $userName = $user->name;
+        $avatarPath = $user->avatar_path;
         $user->syncRoles([]);
         $user->delete();
+
+        if (!empty($avatarPath)) {
+            $this->userAvatarService->deleteAvatar($avatarPath);
+        }
 
         return redirect()->route('users.index')->with('success', "Usuário '{$userName}' excluído com sucesso!");
     }

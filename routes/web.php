@@ -9,6 +9,7 @@ use App\Http\Controllers\EntryController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\MovementController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuickRegistrationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
@@ -32,6 +33,11 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->midd
 
 // Rotas Protegidas por Autenticação e RBAC
 Route::middleware(['auth'])->group(function () {
+    // Perfil do Usuário Logado
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->middleware('can:view-dashboard')
