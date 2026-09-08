@@ -188,6 +188,40 @@ class UserProfileTest extends TestCase
         $this->assertEquals('AL', $this->user->initials());
     }
 
+    public function test_user_first_name_and_short_name_generation(): void
+    {
+        $this->user->name = 'Rodrigo Fernando Gomes Lima';
+        $this->assertEquals('Rodrigo', $this->user->first_name);
+        $this->assertEquals('Rodrigo Lima', $this->user->short_name);
+
+        $this->user->name = 'Daniel Oliveira';
+        $this->assertEquals('Daniel', $this->user->first_name);
+        $this->assertEquals('Daniel Oliveira', $this->user->short_name);
+
+        $this->user->name = 'Almoxarife';
+        $this->assertEquals('Almoxarife', $this->user->first_name);
+        $this->assertEquals('Almoxarife', $this->user->short_name);
+    }
+
+    public function test_navbar_displays_responsive_names_and_full_name_in_dropdown(): void
+    {
+        $this->user->name = 'Rodrigo Fernando Gomes Lima';
+        $this->user->save();
+
+        $response = $this->actingAs($this->user)->get(route('dashboard'));
+        $response->assertStatus(200);
+
+        // Verifica o short_name no desktop e first_name no mobile
+        $response->assertSee('Rodrigo Lima');
+        $response->assertSee('Rodrigo');
+        $response->assertSee('d-none d-md-inline');
+        $response->assertSee('d-inline d-md-none');
+
+        // Verifica o nome completo mantido no dropdown
+        $response->assertSee('Conectado como');
+        $response->assertSee('Rodrigo Fernando Gomes Lima');
+    }
+
     public function test_navbar_displays_avatar_or_initials_for_authenticated_user(): void
     {
         // Sem avatar: renderiza iniciais

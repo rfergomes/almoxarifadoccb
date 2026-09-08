@@ -138,4 +138,31 @@ class User extends Authenticatable
         }
         return mb_strtoupper(mb_substr($words[0], 0, 1) . mb_substr(end($words), 0, 1));
     }
+
+    /**
+     * Retorna apenas o primeiro nome do usuário (ex: "Rodrigo").
+     */
+    public function getFirstNameAttribute(): string
+    {
+        $words = preg_split('/\s+/', trim((string) $this->name));
+        return !empty($words[0]) ? $words[0] : (string) $this->name;
+    }
+
+    /**
+     * Retorna o primeiro e o último nome do usuário (ex: "Rodrigo Lima").
+     * Para monônimos (ex: "Almoxarife"), retorna o próprio nome.
+     */
+    public function getShortNameAttribute(): string
+    {
+        $words = preg_split('/\s+/', trim((string) $this->name));
+        if (empty($words) || empty($words[0])) {
+            return (string) $this->name;
+        }
+
+        if (count($words) === 1) {
+            return $words[0];
+        }
+
+        return $words[0] . ' ' . end($words);
+    }
 }

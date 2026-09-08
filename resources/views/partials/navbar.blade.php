@@ -27,7 +27,8 @@
               {{ Auth::user()->initials() }}
             </div>
           @endif
-          <span class="fw-semibold text-dark">{{ Auth::user()->name }}</span>
+          <span class="fw-semibold text-dark d-none d-md-inline">{{ Auth::user()->short_name }}</span>
+          <span class="fw-semibold text-dark d-inline d-md-none">{{ Auth::user()->first_name }}</span>
           <span class="badge bg-{{ Auth::user()->primary_role_badge ?? 'primary' }} ms-2">{{ Auth::user()->primary_role ?? 'Usuário' }}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="min-width: 200px;">
