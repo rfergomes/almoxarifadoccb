@@ -56,6 +56,7 @@ class QuickRegistrationController extends Controller
                 'name' => $material->name,
                 'current_stock' => $material->current_stock,
                 'unit_measure' => $material->unit_measure,
+                'notes' => $material->notes,
                 'label' => "{$material->code_sku} - {$material->name} (Atual: {$material->current_stock} {$material->unit_measure})",
             ],
         ], 201);

@@ -96,7 +96,16 @@
               @endif
             </td>
             <td class="fw-bold text-navy">{{ $mat->code_sku }}</td>
-            <td>{{ $mat->name }}</td>
+            <td>
+              <span class="fw-semibold">{{ $mat->name }}</span>
+              @if($mat->hasNotes())
+                <i class="bi bi-chat-left-text-fill text-primary ms-1" 
+                   data-bs-toggle="tooltip" 
+                   data-bs-placement="top" 
+                   title="{{ $mat->notes }}" 
+                   style="cursor: help;"></i>
+              @endif
+            </td>
             <td>
               @if($mat->hasPatrimony())
                 <span class="badge bg-info text-dark" title="Código de Patrimônio da Entidade">
@@ -171,6 +180,7 @@
                         data-expiration="{{ $mat->expiration_date?->format('Y-m-d') }}"
                         data-patrimony="{{ $mat->patrimony_code }}"
                         data-status="{{ $mat->status ? '1' : '0' }}"
+                        data-notes="{{ $mat->notes }}"
                         data-image-url="{{ $mat->image_url }}"
                         title="Editar Cadastro do Material">
                   <i class="bi bi-pencil"></i> Editar
@@ -293,6 +303,10 @@
               <img id="create_image_preview" src="" alt="Prévia da foto" class="img-thumbnail rounded shadow-sm" style="max-height: 120px; object-fit: contain;">
             </div>
           </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold"><i class="bi bi-chat-left-text text-primary me-1"></i>Observações <small class="text-muted">(Opcional)</small></label>
+            <textarea name="notes" class="form-control" rows="3" placeholder="Anotações técnicas, instruções de uso, fornecedor habitual ou restrições..."></textarea>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -392,6 +406,10 @@
               <span class="d-block text-muted small mb-1">Nova foto selecionada:</span>
               <img id="edit_new_image_preview" src="" alt="Nova prévia" class="img-thumbnail rounded shadow-sm" style="max-height: 120px; object-fit: contain;">
             </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold"><i class="bi bi-chat-left-text text-primary me-1"></i>Observações <small class="text-muted">(Opcional)</small></label>
+            <textarea name="notes" id="edit_notes" class="form-control" rows="3" placeholder="Anotações técnicas, instruções de uso, fornecedor habitual ou restrições..."></textarea>
           </div>
         </div>
       </div>
@@ -507,6 +525,7 @@
         document.getElementById('edit_ca_validity').value = btn.dataset.caValidity || '';
         document.getElementById('edit_expiration_date').value = btn.dataset.expiration || '';
         document.getElementById('edit_patrimony_code').value = btn.dataset.patrimony || '';
+        document.getElementById('edit_notes').value = btn.dataset.notes || '';
 
         // Gerenciamento da imagem existente no modal de edição
         const currentImageUrl = btn.dataset.imageUrl;

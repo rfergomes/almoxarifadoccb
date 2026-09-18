@@ -29,7 +29,8 @@ class MaterialController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('code_sku', 'like', "%{$search}%")
-                  ->orWhere('patrimony_code', 'like', "%{$search}%");
+                  ->orWhere('patrimony_code', 'like', "%{$search}%")
+                  ->orWhere('notes', 'like', "%{$search}%");
             });
         }
 
@@ -84,6 +85,7 @@ class MaterialController extends Controller
             'ca_validity' => ['nullable', 'date'],
             'expiration_date' => ['nullable', 'date'],
             'patrimony_code' => ['nullable', 'string', 'max:50', Rule::unique('materials', 'patrimony_code')->ignore($material->id)],
+            'notes' => ['nullable', 'string', 'max:2000'],
             'status' => ['required', 'boolean'],
             'image' => ['nullable', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
             'remove_image' => ['nullable', 'boolean'],

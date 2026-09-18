@@ -52,6 +52,10 @@
             <label class="form-label">Validade CA (Exclusivo EPI)</label>
             <input type="date" name="ca_validity" class="form-control">
           </div>
+          <div class="col-12">
+            <label class="form-label"><i class="bi bi-chat-left-text text-primary me-1"></i>Observações <small class="text-muted">(Opcional)</small></label>
+            <textarea name="notes" class="form-control" rows="2" placeholder="Observações complementares do material..."></textarea>
+          </div>
         </div>
       </div>
       <div class="modal-footer">

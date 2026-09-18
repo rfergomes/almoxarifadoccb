@@ -28,6 +28,7 @@ class Material extends Model
         'ca_validity',
         'expiration_date',
         'patrimony_code',
+        'notes',
         'is_returnable',
         'status',
     ];
@@ -189,6 +190,11 @@ class Material extends Model
     public function hasImage(): bool
     {
         return !empty($this->image_path) && Storage::disk('public')->exists($this->image_path);
+    }
+
+    public function hasNotes(): bool
+    {
+        return !empty(trim((string) $this->notes));
     }
 }
 
