@@ -11,6 +11,8 @@ use App\Services\AttachmentService;
 use App\Services\MaterialImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -68,8 +70,24 @@ class MaterialController extends Controller
 
         unset($data['image']);
 
-        Material::create($data);
-        return redirect()->route('materials.index')->with('success', 'Material cadastrado com sucesso!');
+        // Se a coluna notes ainda não existir no banco de dados ativo, evita erro de coluna desconhecida
+        if (array_key_exists('notes', $data) && !Schema::hasColumn('materials', 'notes')) {
+            unset($data['notes']);
+        }
+
+        try {
+            Material::create($data);
+            return redirect()->route('materials.index')->with('success', 'Material cadastrado com sucesso!');
+        } catch (\Throwable $e) {
+            Log::error('Erro ao cadastrar material: ' . $e->getMessage(), [
+                'exception' => $e,
+                'data' => array_diff_key($data, ['image_path' => '']),
+            ]);
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Não foi possível cadastrar o material. Detalhe: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request, Material $material): RedirectResponse
@@ -111,8 +129,24 @@ class MaterialController extends Controller
         unset($data['remove_image']);
         unset($data['image']);
 
-        $material->update($data);
-        return redirect()->route('materials.index')->with('success', 'Cadastro do material atualizado com sucesso! (Estoque inalterado)');
+        // Se a coluna notes ainda não existir no banco de dados ativo, evita erro de coluna desconhecida
+        if (array_key_exists('notes', $data) && !Schema::hasColumn('materials', 'notes')) {
+            unset($data['notes']);
+        }
+
+        try {
+            $material->update($data);
+            return redirect()->route('materials.index')->with('success', 'Cadastro do material atualizado com sucesso! (Estoque inalterado)');
+        } catch (\Throwable $e) {
+            Log::error('Erro ao atualizar material: ' . $e->getMessage(), [
+                'exception' => $e,
+                'material_id' => $material->id,
+            ]);
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Não foi possível atualizar o material. Detalhe: ' . $e->getMessage());
+        }
     }
 
     public function adjustStock(Request $request, Material $material): RedirectResponse

@@ -11,6 +11,8 @@ use App\Models\Beneficiary;
 use App\Models\Destination;
 use App\Models\Material;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class QuickRegistrationController extends Controller
 {
@@ -44,21 +46,36 @@ class QuickRegistrationController extends Controller
 
     public function material(StoreMaterialRequest $request): JsonResponse
     {
-        $material = Material::create($request->validated());
-        $material->load('category');
+        $data = $request->validated();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Material cadastrado com sucesso!',
-            'data' => [
-                'id' => $material->id,
-                'code_sku' => $material->code_sku,
-                'name' => $material->name,
-                'current_stock' => $material->current_stock,
-                'unit_measure' => $material->unit_measure,
-                'notes' => $material->notes,
-                'label' => "{$material->code_sku} - {$material->name} (Atual: {$material->current_stock} {$material->unit_measure})",
-            ],
-        ], 201);
+        if (array_key_exists('notes', $data) && !Schema::hasColumn('materials', 'notes')) {
+            unset($data['notes']);
+        }
+
+        try {
+            $material = Material::create($data);
+            $material->load('category');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Material cadastrado com sucesso!',
+                'data' => [
+                    'id' => $material->id,
+                    'code_sku' => $material->code_sku,
+                    'name' => $material->name,
+                    'current_stock' => $material->current_stock,
+                    'unit_measure' => $material->unit_measure,
+                    'notes' => $material->notes ?? null,
+                    'label' => "{$material->code_sku} - {$material->name} (Atual: {$material->current_stock} {$material->unit_measure})",
+                ],
+            ], 201);
+        } catch (\Throwable $e) {
+            Log::error('Erro no cadastro rápido de material: ' . $e->getMessage(), ['exception' => $e]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Não foi possível cadastrar o material. Detalhe: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }
