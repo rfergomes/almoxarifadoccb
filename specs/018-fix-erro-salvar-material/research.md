@@ -51,6 +51,10 @@ Conforme evidenciado na inspeção visual via phpMyAdmin no banco de dados ativo
 - **Decisão**: Caso a coluna `notes` temporariamente não exista no banco (ex: ambiente com migração atrasada), o controller ou model pode opcionalmente verificar `Schema::hasColumn('materials', 'notes')` antes de tentar salvar o atributo, ou simplesmente manter o esquema do banco estritamente sincronizado com a migração aplicada. A abordagem principal deve ser a atualização imediata da tabela no MySQL, complementada pelo tratamento de exceção.
 - **Justificativa**: A integridade referencial exige que o banco de dados reflita o código. A sincronização do DDL é a solução definitiva.
 
+### Decisão 4: Blindagem da Consulta de Busca (`index`) com Schema Check Dinâmico
+- **Decisão**: Ajustar a consulta de busca em `MaterialController::index()` para verificar se a coluna `notes` existe no banco ativo (`Schema::hasColumn('materials', 'notes')`) antes de adicionar a cláusula `orWhere('notes', 'like', "%{$search}%")`.
+- **Justificativa**: Ao pesquisar por qualquer texto (ex: `"teste"`), se a coluna `notes` não existir no banco de dados ativo, o MySQL rejeita a query com erro de coluna inexistente em cláusula WHERE, quebrando a página com erro 500. Com a verificação dinâmica, a busca funciona perfeitamente por nome, SKU e patrimônio mesmo antes de rodar o comando DDL no phpMyAdmin.
+
 ---
 
 ## 3. Matriz de Compatibilidade

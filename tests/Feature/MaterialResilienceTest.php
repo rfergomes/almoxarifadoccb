@@ -150,4 +150,26 @@ class MaterialResilienceTest extends TestCase
         $response->assertSessionHas('error');
         $response->assertSessionHasInput('name', 'Tomada 2P+T 20A');
     }
+
+    public function test_material_search_filters_normally_without_server_error(): void
+    {
+        Material::create([
+            'code_sku' => 'CCB-903',
+            'name' => 'Material Para Teste Especial',
+            'category_id' => $this->category->id,
+            'unit_measure' => 'UN',
+            'current_stock' => 15,
+            'minimum_stock' => 5,
+            'is_returnable' => false,
+            'status' => true,
+        ]);
+
+        // Simula busca pelo termo "teste" (como informado pelo usuário)
+        $response = $this->actingAs($this->adminUser)
+            ->get(route('materials.index', ['search' => 'teste']));
+
+        $response->assertOk();
+        $response->assertSee('Material Para Teste Especial');
+        $response->assertSee('CCB-903');
+    }
 }

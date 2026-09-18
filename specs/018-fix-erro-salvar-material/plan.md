@@ -6,10 +6,11 @@
 
 ## Summary
 
-Corrigir a falha de persistência que resulta em HTTP 500 (Server Error) ao salvar ou editar materiais no Almoxarifado CCB. O problema decorre do desalinhamento estrutural entre a aplicação e a tabela `materials` no banco de dados MySQL `sibemo33_almoxarifadoccb`, na qual a coluna `notes` não foi adicionada. A solução abrange:
+Corrigir a falha de persistência e de filtragem que resulta em HTTP 500 (Server Error) ao salvar, editar ou pesquisar materiais no Almoxarifado CCB. O problema decorre do desalinhamento estrutural entre a aplicação e a tabela `materials` no banco de dados MySQL `sibemo33_almoxarifadoccb`, na qual a coluna `notes` não foi adicionada. A solução abrange:
 1. Disponibilização de comando DDL direto para phpMyAdmin e instruções de migração para adicionar a coluna `notes` na tabela `materials`.
 2. Aprimoramento defensivo no `MaterialController` com captura de exceções (`try/catch`), registro detalhado de logs e redirecionamento amigável com preservação dos dados submetidos (`withInput()`), prevenindo telas brancas de erro 500 caso ocorram falhas imprevistas de infraestrutura.
-3. Validação funcional ponta a ponta garantindo gravação com sucesso de materiais com e sem observações.
+3. Blindagem da consulta de busca e filtragem no método `index()` do `MaterialController`, verificando dinamicamente a presença da coluna `notes` antes de incluí-la na cláusula `orWhere`, eliminando o erro 500 ao pesquisar por qualquer termo (ex: "teste").
+4. Validação funcional ponta a ponta garantindo gravação, edição e busca textual com sucesso.
 
 ## Technical Context
 

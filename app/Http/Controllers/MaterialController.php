@@ -28,11 +28,16 @@ class MaterialController extends Controller
         $query = Material::with('category');
 
         if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
+            $hasNotesColumn = Schema::hasColumn('materials', 'notes');
+
+            $query->where(function ($q) use ($search, $hasNotesColumn) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('code_sku', 'like', "%{$search}%")
-                  ->orWhere('patrimony_code', 'like', "%{$search}%")
-                  ->orWhere('notes', 'like', "%{$search}%");
+                  ->orWhere('patrimony_code', 'like', "%{$search}%");
+
+                if ($hasNotesColumn) {
+                    $q->orWhere('notes', 'like', "%{$search}%");
+                }
             });
         }
 

@@ -285,7 +285,7 @@
           </div>
           <div class="col-md-6">
             <label class="form-label">Estoque Mínimo *</label>
-            <input type="number" name="minimum_stock" class="form-control" value="5" min="0" required>
+            <input type="number" name="minimum_stock" class="form-control" value="0" min="0" required>
           </div>
           <div class="col-md-6">
             <label class="form-label">Nº CA (Exclusivo EPI)</label>

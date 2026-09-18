@@ -56,7 +56,17 @@ Após sincronizar a estrutura do banco:
 
 ---
 
-## 4. Execução de Testes Automatizados
+## 4. Validação da Busca e Filtragem no Navegador
+
+1. No catálogo de materiais (`/materials`), localize o campo de pesquisa textual no topo da tabela.
+2. Digite o termo de teste (ex: `teste`).
+3. **Resultado Esperado**:
+   - A página recarrega aplicando o filtro de busca sem apresentar tela de erro 500.
+   - Caso existam itens correspondentes, eles são exibidos; caso contrário, é exibida a mensagem de que nenhum registro foi encontrado.
+
+---
+
+## 5. Execução de Testes Automatizados
 
 Para certificar que nenhuma regressão foi introduzida:
 

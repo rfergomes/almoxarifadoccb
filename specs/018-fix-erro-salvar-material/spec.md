@@ -53,10 +53,26 @@ Como administrador ou mantenedor do sistema, necessito que a estrutura do banco 
 
 ---
 
+### User Story 4 - Busca e Filtragem de Materiais sem Erro 500 (Priority: P2)
+
+Como usuário ou almoxarife, desejo utilizar a barra de pesquisa do catálogo de materiais para buscar itens por nome, código SKU ou observações, obtendo os resultados filtrados instantaneamente e sem interrupções por erros internos de servidor (HTTP 500), mesmo que colunas complementares ainda não tenham sido migradas no banco ativo.
+
+**Why this priority**: A busca é a ferramenta primária de consulta e movimentação no dia a dia do almoxarifado. Um erro 500 na busca inutiliza a navegação no estoque.
+
+**Independent Test**: Digitar termos de busca (como "teste", nomes de materiais ou SKUs) no input de pesquisa do catálogo de materiais e constatar que a listagem filtra corretamente sem tela de erro 500.
+
+**Acceptance Scenarios**:
+
+1. **Given** o catálogo de materiais exibido na tela, **When** o usuário digita qualquer termo na barra de pesquisa e submete, **Then** o sistema filtra os materiais compatíveis por nome, SKU, patrimônio e observações (se disponível) e exibe os resultados na tabela sem erro 500.
+2. **Given** um banco de dados onde a coluna `notes` ainda não foi criada, **When** o usuário pesquisa qualquer termo, **Then** o sistema realiza a busca por nome, SKU e patrimônio sem estourar exceção SQL de coluna inexistente.
+
+---
+
 ### Edge Cases
 
 - **Formulário submetido sem preencher o campo de observações**: O sistema deve salvar normalmente com valor nulo ou vazio no campo, sem gerar erros de constraint ou validação.
 - **Banco de dados com migração pendente no ambiente de produção**: A aplicação deve tratar a ausência transitória de colunas opcionais ou fornecer script SQL direto para que o administrador execute imediatamente no phpMyAdmin.
+- **Busca por texto com termos especiais ou caracteres acentuados**: A busca deve higienizar o termo e filtrar adequadamente sem quebrar a consulta SQL.
 - **Tamanho excessivo no texto de observações**: Se o usuário colar um texto muito longo (acima de 2.000 caracteres), o sistema deve barrar na validação antes da consulta SQL e informar o limite ao usuário.
 
 ## Requirements *(mandatory)*
@@ -68,6 +84,7 @@ Como administrador ou mantenedor do sistema, necessito que a estrutura do banco 
 - **FR-003**: O sistema DEVE disponibilizar o comando/script de migração e o comando SQL direto compatível com phpMyAdmin/MySQL para inserção da coluna `notes` caso o ambiente não suporte execução direta via terminal artisan.
 - **FR-004**: O sistema DEVE assegurar que a atualização cadastral de materiais existentes processe e persista o campo `notes` adequadamente.
 - **FR-005**: O sistema DEVE registrar em log adequado quaisquer exceções capturadas durante operações de persistência para facilitar diagnósticos operacionais.
+- **FR-006**: O sistema DEVE garantir que a consulta de busca e filtragem no catálogo de materiais (`index`) funcione de forma resiliente, verificando a existência da coluna `notes` antes de incluí-la na cláusula `WHERE` da query, eliminando erros 500 na pesquisa.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -81,6 +98,7 @@ Como administrador ou mantenedor do sistema, necessito que a estrutura do banco 
 - **SC-002**: 100% dos materiais cadastrados com ou sem observações são gravados com sucesso e exibidos imediatamente na listagem.
 - **SC-003**: Tempo total de resposta na submissão de cadastro de material inferior a 2 segundos.
 - **SC-004**: 100% de conformidade entre a estrutura da tabela `materials` no banco de dados e os atributos manipulados pela aplicação.
+- **SC-005**: 100% das buscas e filtragens textuais por termo (ex: "teste") executam com sucesso retornando os resultados esperados sem tela de erro 500.
 
 ## Assumptions
 

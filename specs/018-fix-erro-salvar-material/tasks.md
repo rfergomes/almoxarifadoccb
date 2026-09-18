@@ -1,18 +1,18 @@
 ---
 
-description: "Lista de tarefas para correção do erro ao salvar material (Feature 018)"
+description: "Lista de tarefas para correção de persistência e filtragem de materiais (Feature 018)"
 ---
 
-# Tasks: Correção do Erro ao Salvar Material
+# Tasks: Correção do Erro ao Salvar e Filtrar Material
 
 **Input**: Documentos de design em `specs/018-fix-erro-salvar-material/`  
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/fix-salvar-material-contract.md`, `quickstart.md`  
-**Organization**: Tarefas organizadas por fases e histórias de usuário (US1 - MVP, US2, US3) para viabilizar execução e testes independentes.  
+**Organization**: Tarefas organizadas por fases e histórias de usuário (US1 - MVP, US2, US3, US4) para viabilizar execução e testes independentes.  
 
 ## Format: `[ID] [P?] [Story?] Description with file path`
 
 - **[P]**: Executável em paralelo (arquivos distintos, sem dependências pendentes)
-- **[Story]**: Mapeamento para histórias de usuário do `spec.md` (`[US1]`, `[US2]`, `[US3]`)
+- **[Story]**: Mapeamento para histórias de usuário do `spec.md` (`[US1]`, `[US2]`, `[US3]`, `[US4]`)
 - Arquivos com caminhos relativos ao repositório
 
 ---
@@ -30,7 +30,7 @@ description: "Lista de tarefas para correção do erro ao salvar material (Featu
 
 **Purpose**: Sincronização do esquema estrutural da tabela `materials` para eliminar o erro SQL de coluna inexistente
 
-**⚠️ CRITICAL**: Pré-requisito para evitar falhas de execução nas operações de persistência
+**⚠️ CRITICAL**: Pré-requisito para evitar falhas de execução nas operações de persistência e filtragem
 
 - [x] T003 [US3] Disponibilizar script DDL de execução imediata no phpMyAdmin (`ALTER TABLE materials ADD COLUMN notes TEXT NULL AFTER patrimony_code;`) em `specs/018-fix-erro-salvar-material/quickstart.md`
 - [x] T004 [US3] Executar o comando de migração `php artisan migrate --force` para sincronizar bases conectadas via terminal
@@ -78,13 +78,30 @@ description: "Lista de tarefas para correção do erro ao salvar material (Featu
 
 ---
 
-## Phase 5: Polish & Validação Final
+## Phase 5: User Story 4 - Busca e Filtragem de Materiais sem Erro 500 (Priority: P2)
+
+**Goal**: Assegurar que a busca textual no catálogo de materiais por qualquer termo (ex: "teste") execute com sucesso sem disparar erro HTTP 500, verificando a existência da coluna `notes` antes da consulta.
+
+**Independent Test**: Realizar requisição GET em `/materials?search=teste` e verificar status 200 com renderização da listagem filtrada sem exceção SQL.
+
+### Tests for User Story 4 ⚠️
+
+- [x] T012 [P] [US4] Adicionar teste cobrindo pesquisa textual por termo em `MaterialResilienceTest.php` garantindo funcionamento sem falhas
+### Implementation for User Story 4
+
+- [x] T013 [US4] Blindar a cláusula de busca textual no método `index()` de `app/Http/Controllers/MaterialController.php` com a checagem dinâmica `Schema::hasColumn('materials', 'notes')`
+
+**Checkpoint**: Busca textual do catálogo de materiais 100% resiliente e protegida contra erro 500.
+
+---
+
+## Phase 6: Polish & Validação Final
 
 **Purpose**: Verificação completa de integridade e regressões
 
-- [x] T012 [P] Executar a suíte de testes de materiais através de `php artisan test --filter=Material`
-- [x] T013 Executar a suíte completa de testes do projeto via `php artisan test`
-- [x] T014 Validar visualmente o fluxo de cadastro e edição no navegador e atualizar checklist de conclusão em `specs/018-fix-erro-salvar-material/quickstart.md`
+- [x] T014 [P] Executar a suíte de testes de materiais através de `php artisan test --filter=Material`
+- [x] T015 Executar a suíte completa de testes do projeto via `php artisan test`
+- [x] T016 Validar visualmente a pesquisa por `"teste"` no navegador e atualizar conformidade em `specs/018-fix-erro-salvar-material/quickstart.md`
 
 ---
 
@@ -102,28 +119,16 @@ graph TD
     T008 --> T010[T010: Try/Catch Store]
     T008 --> T011[T011: Try/Catch Update]
     T009[T009: Teste Resiliência] --> T010
-    T010 --> T012[T012: Testes Automatizados]
-    T011 --> T012
-    T012 --> T013[T013: Suíte Completa]
-    T013 --> T014[T014: Validação Final]
+    T010 --> T012[T012: Teste Busca Resiliente]
+    T012 --> T013[T013: Schema Check em index()]
+    T013 --> T014[T014: Testes de Materiais]
+    T014 --> T015[T015: Suíte Completa]
+    T015 --> T016[T016: Validação Final]
 ```
 
 ---
 
 ## Parallel Opportunities
 
-- **T001 e T002**: Análise de configuração e validação de migração podem ser feitas em paralelo.
-- **T005 e T009**: Testes de persistência (US1) e testes de resiliência com mock/falha (US2) podem ser preparados simultaneamente.
-- **T010 e T011**: Implementação do `try/catch` defensivo em `store()` e `update()` em métodos distintos.
-
----
-
-## Implementation Strategy
-
-1. **MVP (Fases 1, 2 e 3)**:
-   - Sincronização estrutural da tabela `materials` no banco de dados ativo (inserção da coluna `notes`).
-   - Normalização dos métodos `store()` e `update()` para gravação imediata sem erro 500.
-2. **Incremento de Robustez (Fase 4)**:
-   - Blindagem defensiva com `try/catch`, logging estruturado e `back()->withInput()`.
-3. **Homologação e Polish (Fase 5)**:
-   - Validação da suíte de testes automatizados e conferência no navegador.
+- **T012 e T014**: Testes de busca e testes da suíte de materiais podem ser executados isoladamente.
+- **T013**: Implementação no `MaterialController::index()`.
